@@ -1,0 +1,174 @@
+#!/usr/bin/python3
+"""
+Prepare system for anaconda
+
+TBD
+"""
+
+
+import json
+import os
+import re
+import subprocess
+import sys
+import shutil
+
+import osbuild.api
+
+
+SCHEMA = """
+"additionalProperties": true,
+"properties": {
+  "checksum": {
+    "type": "string",
+    "description": "The kickstart file to include (checksum)"
+  }
+}
+"""
+
+
+KICKSTART = """
+# Kickstart defaults file for an interative install.
+# This is not loaded if a kickstart file is provided on the command line.
+firstboot --enable
+
+%anaconda
+# Default password policies
+pwpolicy root --notstrict --minlen=6 --minquality=1 --nochanges --notempty
+pwpolicy user --notstrict --minlen=6 --minquality=1 --nochanges --emptyok
+pwpolicy luks --notstrict --minlen=6 --minquality=1 --nochanges --notempty
+# NOTE: This applies only to *fully* interactive installations, partial kickstart
+#       installations use defaults specified in pyanaconda/pwpolicy.py.
+#       Automated kickstart installs simply ignore the password policy as the policy
+#       only applies to the UI, not for passwords specified in kickstart.
+%end
+ostreesetup --nogpg --osname=fedora-iot --remote=fedora-iot --url=file:///ostree/repo --ref=fedora/x86_64/osbuild
+firewall --use-system-defaults
+%post --erroronfail
+rm -f /etc/ostree/remotes.d/fedora-iot.conf
+#ostree remote add --set=gpg-verify=false fedora-iot '@REMOTE_URL@'
+cp /etc/skel/.bash* /root
+%end
+"""
+
+
+LORAX_TEMPLATES = "/usr/share/lorax/templates.d/99-generic"
+
+
+def install(src, dst, *, mode=None, root=None, tree=None):
+    if root:
+        src = f"{root}/{src}"
+    if tree:
+        dst = f"{tree}/{dst}"
+
+    print(f"install {src} -> {dst}")
+    shutil.copy2(src, dst)
+    if mode:
+        os.chmod(dst, mode)
+
+
+def move(src, dst, *, root=None, tree=None):
+    if root:
+        src = f"{root}/{src}"
+    if tree:
+        dst = f"{tree}/{dst}"
+
+    print(f"move {src} -> {dst}")
+    shutil.move(src, dst)
+
+
+def symlink(src, dst, *, root=None, tree=None):
+    if root:
+        src = f"{root}/{src}"
+    if tree:
+        dst = f"{tree}/{dst}"
+    print(f"symlink {dst} -> {src}")
+    os.symlink(src, dst)
+
+
+def replace(target, patterns):
+    finder = [(re.compile(p), s) for p, s in patterns]
+    newfile = target + ".replace"
+
+    with open(target, "r") as i, open(newfile, "w") as o:
+        for line in i:
+            for p, s in finder:
+                line = p.sub(s, line)
+            o.write(line)
+    os.rename(newfile, target)
+
+
+def ostree(*args, _input=None, _stdout=sys.stderr, **kwargs):
+    args = list(args) + [f'--{k}={v}' for k, v in kwargs.items()]
+    subprocess.run(["ostree"] + args,
+                   encoding="utf-8",
+                   stdout=_stdout,
+                   input=_input,
+                   check=True)
+
+
+def main(tree, _options):
+    configdir = os.path.join(LORAX_TEMPLATES, "config_files", "common")
+
+    move("/usr/share/anaconda/restart-anaconda", "/usr/bin", tree=tree, root=tree)
+    for stub in ("list-harddrives",): # "raidstart", "raidstop" do not exist
+        move(f"/usr/share/anaconda/{stub}-stub", f"/usr/bin/{stub}",
+             tree=tree, root=tree)
+
+    move("/etc/yum.repos.d", "/etc/anaconda.repos.d",
+         root=tree, tree=tree)
+
+    ## install some basic configuration files
+    os.makedirs(os.path.join(tree, "etc", "ssh"), exist_ok=True)
+    install("sshd_config.anaconda", "/etc/ssh/sshd_config.anaconda",
+            tree=tree, root=configdir)
+
+    os.makedirs("{tree}/etc/NetworkManager/conf.d", exist_ok=True)
+    install("91-anaconda-autoconnect-slaves.conf", "/etc/NetworkManager/conf.d",
+            root=configdir, tree=tree)
+    install("vconsole.conf", "/etc", root=configdir, tree=tree)
+    install("92-anaconda-loglevel-debug.conf", "/etc/NetworkManager/conf.d",
+            root=configdir, tree=tree)
+    install("spice-vdagentd", "/etc/sysconfig",
+            root=configdir, tree=tree)
+    install("sysctl.conf", "/etc/sysctl.d/anaconda.conf",
+            root=configdir, tree=tree)
+    install("profile", "root/.profile",
+            root=configdir, tree=tree)
+
+    os.unlink(f"{tree}/lib/systemd/system/autovt@.service")
+    symlink("anaconda-shell@.service", "/lib/systemd/system/autovt@.service",
+            tree=tree)
+
+    replace(f"{tree}/etc/systemd/logind.conf",
+            [("#ReserveVT=6", "ReserveVT=2")])
+
+    os.makedirs(os.path.join(tree, "etc/pam.d"), exist_ok=True)
+    for f in ("sshd", "login", "remote"):
+        install("pam.sshd", "/etc/pam.d/f", tree=tree, root=configdir)
+
+    # SELinux to permissive mode
+    # actually required otherwise anaconda.service does not start
+    with open(f"{tree}/etc/selinux/config", "w") as f:
+        f.write("SELINUX=permissive\n"
+                "SELINUXTYPE=targeted\n")
+
+    os.unlink(f"{tree}/usr/sbin/auditd")
+    move("/usr/libexec/anaconda/auditd", "/usr/sbin",
+         root=tree, tree=tree)
+
+    symlink("/lib/modules", "/modules", tree=tree)
+    symlink("/lib/firmware", "/firmware", tree=tree)
+    symlink("../run/install", "/mnt/install", tree=tree)
+
+    # the default kickstart file
+    os.makedirs(f"{tree}/usr/share/anaconda/", exist_ok=True)
+    with open(f"{tree}/usr/share/anaconda/interactive-defaults.ks", "w") as f:
+        f.write(KICKSTART)
+
+
+if __name__ == '__main__':
+    stage_args = osbuild.api.arguments()
+    r = main(stage_args["tree"],
+             stage_args["options"])
+    sys.exit(r)
