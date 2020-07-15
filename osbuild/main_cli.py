@@ -80,6 +80,10 @@ def parse_arguments(sys_argv):
                         help="directory where result objects are stored")
     parser.add_argument("--inspect", action="store_true",
                         help="return the manifest in JSON format including all the ids")
+    parser.add_argument("--monitor", metavar="NAME", default=None,
+                        help="Name of the monitor to be used")
+    parser.add_argument("--monitor-fd", metavar="FD", type=int, default=sys.stdout.fileno(),
+                        help="File descriptor to be used for the monitor")
 
     return parser.parse_args(sys_argv[1:])
 
@@ -128,8 +132,10 @@ def osbuild_cli():
         print("No output directory or checkpoints specified, exited without building.")
         return 0
 
-    monitor_name = "NullMonitor" if args.json else "LogMonitor"
-    monitor = osbuild.monitor.make(monitor_name, sys.stdout.fileno())
+    monitor_name = args.monitor
+    if not monitor_name:
+        monitor_name = "NullMonitor" if args.json else "LogMonitor"
+    monitor = osbuild.monitor.make(monitor_name, args.monitor_fd)
 
     try:
         output_directory = args.output_directory
