@@ -200,6 +200,7 @@ def fetch_urls(checksums, urls, cache):
 
 
 def export(checksums, cache, output):
+    print("exporting", file=sys.stderr)
     for checksum in checksums:
         try:
             subprocess.run(
@@ -220,14 +221,27 @@ def export(checksums, cache, output):
 
 
 def main(options, checksums, cache, output):
-    urls = options.get("urls", {})
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--fetch-only", dest="fetch", action="store_true", default=False,
+                        help="Fetch files but don't export")
+    argv = parser.parse_args()
 
     os.makedirs(cache, exist_ok=True)
-    os.makedirs(output, exist_ok=True)
+
+    urls = options.get("urls", {})
+
+    if argv.fetch and not checksums:
+        checksums = [k for k, _ in urls.items()]
 
     res = fetch_urls(checksums, urls, cache)
     if res != 0:
         return res
+
+    if argv.fetch:
+        json.dump({}, sys.stdout)
+        return 0
+
+    os.makedirs(output, exist_ok=True)
 
     res = export(checksums, cache, output)
     if res != 0:
@@ -236,5 +250,5 @@ def main(options, checksums, cache, output):
 
 if __name__ == '__main__':
     args = json.load(sys.stdin)
-    r = main(args["options"], args["checksums"], args["cache"], args["output"])
+    r = main(args.get("options", {}), args["checksums"], args["cache"], args["output"])
     sys.exit(r)

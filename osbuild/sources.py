@@ -1,5 +1,7 @@
 import json
+import os
 import subprocess
+import sys
 from . import api
 from .util import jsoncomm
 
@@ -52,3 +54,34 @@ def get(source, checksums, api_path="/run/osbuild/api/sources"):
         if "error" in reply:
             raise RuntimeError(f"{source}: " + reply["error"])
         return reply
+
+
+def download(store, libdir, sources_options):
+    for source, options in sources_options.items():
+        cache = os.path.join(store.store, "sources", source)
+
+        msg = {
+            "options": options,
+            "cache": cache,
+            "output": None,
+            "checksums": [],
+            "libdir": libdir
+        }
+
+        r = subprocess.run(
+            [f"{libdir}/sources/{source}", "--fetch-only"],
+            input=json.dumps(msg),
+            stdout=subprocess.PIPE,
+            encoding="utf-8",
+            check=False)
+
+        try:
+            reply = json.loads(r.stdout)
+        except ValueError:
+            return {"error": f"source returned malformed json: {r.stdout}"}
+
+        if "error" in reply:
+            raise RuntimeError(f"{source}: " + reply["error"])
+
+        if r.returncode != 0:
+            raise RuntimeError(f"{source}: error {r.returncode}")

@@ -270,6 +270,8 @@ class Manifest:
     def build(self, store, monitor, libdir, output_directory):
         results = {"success": True}
 
+        sources.download(store, libdir, self.source_options)
+
         for pl in self.pipelines:
             res = pl.run(store, monitor, libdir, output_directory)
             results[pl.id] = res
