@@ -13,6 +13,7 @@ up the download.
 """
 
 
+import argparse
 import concurrent.futures
 import glob
 import itertools
@@ -158,12 +159,7 @@ def get_rhsm_secrets():
     raise RuntimeError("no matching rhsm key and cert")
 
 
-def main(options, checksums, cache, output):
-    urls = options.get("urls", {})
-
-    os.makedirs(cache, exist_ok=True)
-    os.makedirs(output, exist_ok=True)
-
+def fetch_urls(checksums, urls, cache):
     with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
         requested_urls = []
         rhsm_secrets = None
@@ -200,6 +196,10 @@ def main(options, checksums, cache, output):
             json.dump({"error": e.args[0]}, sys.stdout)
             return 1
 
+        return 0
+
+
+def export(checksums, cache, output):
     for checksum in checksums:
         try:
             subprocess.run(
@@ -217,6 +217,21 @@ def main(options, checksums, cache, output):
 
     json.dump({}, sys.stdout)
     return 0
+
+
+def main(options, checksums, cache, output):
+    urls = options.get("urls", {})
+
+    os.makedirs(cache, exist_ok=True)
+    os.makedirs(output, exist_ok=True)
+
+    res = fetch_urls(checksums, urls, cache)
+    if res != 0:
+        return res
+
+    res = export(checksums, cache, output)
+    if res != 0:
+        return res
 
 
 if __name__ == '__main__':
