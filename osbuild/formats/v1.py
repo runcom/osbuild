@@ -76,6 +76,21 @@ class Loader:
         self.pipeline = None # The main pipeline
         self.assembler = None # The old assembler
 
+    def convert_org_osbuild_rpm(self, stage):
+        packages = stage.options.get("packages", [])
+        if not packages:
+            return
+
+        checksums = []
+        for pkg in packages:
+            if isinstance(pkg, str):
+                pkg = {"checksum": pkg, "check_pgp": False}
+            checksums.append(pkg["checksum"])
+
+        stage.inputs = [
+            Input("packages", "source", "org.osbuild.files", {"checksums": checksums})
+        ]
+
     def add_assembler(self, desc: Dict):
         if not desc:
             return
@@ -93,7 +108,7 @@ class Loader:
         info = self.index.get_module_info("Assembler", name)
 
         stage = pipeline.add_stage(info, self.sources_options, options)
-        stage.inputs = [Input("tree", "pipeline", {"id": base})]
+        stage.inputs = [Input("tree", "pipeline", "org.osbuild.tree", {"id": base})]
 
         new_id = stage.id
         old_id = calc_id(name, build, base, options)
@@ -122,7 +137,13 @@ class Loader:
 
         for s in description.get("stages", []):
             info = self.index.get_module_info("Stage", s["name"])
-            pipeline.add_stage(info, self.sources_options, s.get("options", {}))
+            options = s.get("options", {})
+            stage = pipeline.add_stage(info, self.sources_options, options)
+
+            if stage.name == "org.osbuild.rpm":
+                old_id = stage.id
+                self.convert_org_osbuild_rpm(stage)
+                self.ids[old_id] = stage.id
 
         self.pipelines.append(pipeline)
 

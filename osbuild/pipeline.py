@@ -34,9 +34,10 @@ class BuildResult:
 
 
 class Input:
-    def __init__(self, name, input_type, options):
+    def __init__(self, name, input_type, form, options):
         self.name = name
         self.type = input_type
+        self.form = form
         self.options = options
 
 
@@ -89,13 +90,7 @@ class Stage:
 
             inputs = {}
             for ip in self.inputs:
-                assert ip.type == "pipeline"
-                pid = ip.options["id"]
-                if not pid:
-                    obj = store.new()
-                else:
-                    obj = store.get(pid)
-                path = cm.enter_context(obj.read())
+                assert ip.type in ["pipeline", "source"]
 
                 mapped = f"/run/osbuild/inputs/{ip.name}"
                 inputs[ip.name] = {
@@ -105,6 +100,19 @@ class Stage:
                         "options": ip.options
                     }
                 }
+
+                if ip.type == "pipeline":
+                    pid = ip.options["id"]
+                    if not pid:
+                        obj = store.new()
+                    else:
+                        obj = store.get(pid)
+                    path = cm.enter_context(obj.read())
+                else:
+                    path = os.path.join(sources_output, ip.name)
+                    data = sources.export(ip.form, ip.options, store, path, libdir)
+
+                    inputs[ip.name]["data"] = data
 
                 ro_binds += [
                     f"{path}:{mapped}"

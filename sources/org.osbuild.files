@@ -216,7 +216,7 @@ def export(checksums, cache, output):
             json.dump({"error": e.output}, sys.stdout)
             return 1
 
-    json.dump({}, sys.stdout)
+    json.dump({"files": checksums}, sys.stdout)
     return 0
 
 
@@ -233,9 +233,10 @@ def main(options, checksums, cache, output):
     if argv.fetch and not checksums:
         checksums = [k for k, _ in urls.items()]
 
-    res = fetch_urls(checksums, urls, cache)
-    if res != 0:
-        return res
+    if urls:
+        res = fetch_urls(checksums, urls, cache)
+        if res != 0:
+            return res
 
     if argv.fetch:
         json.dump({}, sys.stdout)

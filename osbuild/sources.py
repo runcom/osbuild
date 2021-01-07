@@ -85,3 +85,33 @@ def download(store, libdir, sources_options):
 
         if r.returncode != 0:
             raise RuntimeError(f"{source}: error {r.returncode}")
+
+
+def export(source, options, store, output, libdir):
+    cache = os.path.join(store.store, "sources", source)
+    checksums = options.get("checksums", [])
+
+    msg = {
+        "options": {},
+        "cache": cache,
+        "output": output,
+        "checksums": checksums,
+        "libdir": libdir
+    }
+
+    r = subprocess.run(
+        [f"{libdir}/sources/{source}"],
+        input=json.dumps(msg),
+        stdout=subprocess.PIPE,
+        encoding="utf-8",
+        check=False)
+
+    reply = json.loads(r.stdout)
+
+    if "error" in reply:
+        raise RuntimeError(f"{source}: " + reply["error"])
+
+    if r.returncode != 0:
+        raise RuntimeError(f"{source}: error {r.returncode}")
+
+    return reply
