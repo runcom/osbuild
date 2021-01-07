@@ -80,6 +80,13 @@ SCHEMA = """
 """
 
 
+INPUTS = """
+{
+  "packages": "org.osbuild.files"
+}
+"""
+
+
 def packages_from_legacy(legacy):
     packages = []
     for package in legacy:

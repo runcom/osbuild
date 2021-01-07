@@ -1,0 +1,75 @@
+#!/usr/bin/python3
+"""
+Inputs for ostree commits
+"""
+
+
+import os
+import json
+import sys
+import subprocess
+
+from osbuild.objectstore import ObjectStore
+
+
+SCHEMA = """
+"additionalProperties": false
+"""
+
+def ostree(*args, _input=None, **kwargs):
+    args = list(args) + [f'--{k}={v}' for k, v in kwargs.items()]
+    print("ostree " + " ".join(args), file=sys.stderr)
+    subprocess.run(["ostree"] + args,
+                   encoding="utf-8",
+                   stdout=sys.stderr,
+                   input=_input,
+                   check=True)
+
+
+def export(checksums, cache, output):
+    repo_cache = os.path.join(cache, "repo")
+
+    repo_out = os.path.join(output, "repo")
+    ostree("init", mode="archive", repo=repo_out)
+
+    for commit in checksums:
+        # Transfer the commit: remote → cache
+        print(f"exporting {commit}", file=sys.stderr)
+
+        ostree("pull-local", repo_cache, commit,
+               repo=repo_out)
+
+    reply = {
+        "path": repo_out,
+        "commits": checksums
+    }
+
+    json.dump(reply, sys.stdout)
+
+
+def main():
+    args = json.load(sys.stdin)
+    options = args["options"]
+    origin = args["origin"]
+    output = args["output"]
+
+    store = ObjectStore(args["store"])
+
+    if origin == "source":
+        source = os.path.join(store.store, "sources", "org.osbuild.ostree", "repo")
+        checksums = options["checksums"]
+    else:
+        pid = options["id"]
+        tree = store.resolve_ref(pid)
+        source = os.path.join(tree, "repo")
+        with open(os.path.join(tree, "compose.json"), "r") as f:
+            compose = json.load(f)
+        checksums = [compose["ostree-commit"]]
+
+    export(checksums, source, output)
+    return 0
+
+
+if __name__ == '__main__':
+    r = main()
+    sys.exit(r)

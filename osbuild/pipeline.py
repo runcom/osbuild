@@ -8,6 +8,7 @@ from typing import List
 
 from .api import API
 from . import buildroot
+from . import inputs
 from . import objectstore
 from . import remoteloop
 from . import sources
@@ -80,7 +81,8 @@ class Stage:
                 "options": self.options,
                 "meta": {
                     "id": self.id
-                }
+                },
+                "inputs": {}
             }
 
             ro_binds = [
@@ -88,37 +90,22 @@ class Stage:
                 f"{sources_output}:/run/osbuild/sources"
             ]
 
-            inputs = {}
+
             for ip in self.inputs:
                 assert ip.type in ["pipeline", "source"]
+                output = os.path.join(sources_output, ip.name)
+
+                data = inputs.export(ip, store, output, libdir)
 
                 mapped = f"/run/osbuild/inputs/{ip.name}"
-                inputs[ip.name] = {
-                    "type": ip.type,
-                    "path": mapped,
-                    "meta": {
-                        "options": ip.options
-                    }
-                }
 
-                if ip.type == "pipeline":
-                    pid = ip.options["id"]
-                    if not pid:
-                        obj = store.new()
-                    else:
-                        obj = store.get(pid)
-                    path = cm.enter_context(obj.read())
-                else:
-                    path = os.path.join(sources_output, ip.name)
-                    data = sources.export(ip.form, ip.options, store, path, libdir)
-
-                    inputs[ip.name]["data"] = data
-
+                path = data["path"]
                 ro_binds += [
                     f"{path}:{mapped}"
                 ]
+                data["path"] = mapped
 
-            args["inputs"] = inputs
+                args["inputs"][ip.name] = data
 
             api = API(args, monitor)
             build_root.register_api(api)
