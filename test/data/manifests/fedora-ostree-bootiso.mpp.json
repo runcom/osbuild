@@ -1,0 +1,455 @@
+{
+  "version": "2",
+  "pipelines": [
+    {
+      "mpp-import-pipeline": {
+        "path": "f34-build-v2.json",
+        "id": "build"
+      },
+      "runner": "org.osbuild.fedora33"
+    },
+    {
+      "name": "ostree-tree",
+      "build": "name:build",
+      "stages": [
+        {
+          "type": "org.osbuild.rpm",
+          "options": {
+            "gpgkeys": [
+              "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQINBF1RVqsBEADWMBqYv/G1r4PwyiPQCfg5fXFGXV1FCZ32qMi9gLUTv1CX7rYy\nH4Inj93oic+lt1kQ0kQCkINOwQczOkm6XDkEekmMrHknJpFLwrTK4AS28bYF2RjL\nM+QJ/dGXDMPYsP0tkLvoxaHr9WTRq89A+AmONcUAQIMJg3JxXAAafBi2UszUUEPI\nU35MyufFt2ePd1k/6hVAO8S2VT72TxXSY7Ha4X2J0pGzbqQ6Dq3AVzogsnoIi09A\n7fYutYZPVVAEGRUqavl0th8LyuZShASZ38CdAHBMvWV4bVZghd/wDV5ev3LXUE0o\nitLAqNSeiDJ3grKWN6v0qdU0l3Ya60sugABd3xaE+ROe8kDCy3WmAaO51Q880ZA2\niXOTJFObqkBTP9j9+ZeQ+KNE8SBoiH1EybKtBU8HmygZvu8ZC1TKUyL5gwGUJt8v\nergy5Bw3Q7av520sNGD3cIWr4fBAVYwdBoZT8RcsnU1PP67NmOGFcwSFJ/LpiOMC\npZ1IBvjOC7KyKEZY2/63kjW73mB7OHOd18BHtGVkA3QAdVlcSule/z68VOAy6bih\nE6mdxP28D4INsts8w6yr4G+3aEIN8u0qRQq66Ri5mOXTyle+ONudtfGg3U9lgicg\nz6oVk17RT0jV9uL6K41sGZ1sH/6yTXQKagdAYr3w1ix2L46JgzC+/+6SSwARAQAB\ntDFGZWRvcmEgKDMyKSA8ZmVkb3JhLTMyLXByaW1hcnlAZmVkb3JhcHJvamVjdC5v\ncmc+iQI4BBMBAgAiBQJdUVarAhsPBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAK\nCRBsEwJtEslE0LdAD/wKdAMtfzr7O2y06/sOPnrb3D39Y2DXbB8y0iEmRdBL29Bq\n5btxwmAka7JZRJVFxPsOVqZ6KARjS0/oCBmJc0jCRANFCtM4UjVHTSsxrJfuPkel\nvrlNE9tcR6OCRpuj/PZgUa39iifF/FTUfDgh4Q91xiQoLqfBxOJzravQHoK9VzrM\nNTOu6J6l4zeGzY/ocj6DpT+5fdUO/3HgGFNiNYPC6GVzeiA3AAVR0sCyGENuqqdg\nwUxV3BIht05M5Wcdvxg1U9x5I3yjkLQw+idvX4pevTiCh9/0u+4g80cT/21Cxsdx\n7+DVHaewXbF87QQIcOAing0S5QE67r2uPVxmWy/56TKUqDoyP8SNsV62lT2jutsj\nLevNxUky011g5w3bc61UeaeKrrurFdRs+RwBVkXmtqm/i6g0ZTWZyWGO6gJd+HWA\nqY1NYiq4+cMvNLatmA2sOoCsRNmE9q6jM/ESVgaH8hSp8GcLuzt9/r4PZZGl5CvU\neldOiD221u8rzuHmLs4dsgwJJ9pgLT0cUAsOpbMPI0JpGIPQ2SG6yK7LmO6HFOxb\nAkz7IGUt0gy1MzPTyBvnB+WgD1I+IQXXsJbhP5+d+d3mOnqsd6oDM/grKBzrhoUe\noNadc9uzjqKlOrmrdIR3Bz38SSiWlde5fu6xPqJdmGZRNjXtcyJlbSPVDIloxw==\n=QWRO\n-----END PGP PUBLIC KEY BLOCK-----\n"
+            ]
+          },
+          "inputs": {
+            "packages": {
+              "type": "org.osbuild.files",
+              "origin": "org.osbuild.source",
+              "mpp-depsolve": {
+                "architecture": "x86_64",
+                "module-platform-id": "f34",
+                "baseurl": "https://rpmrepo.osbuild.org/v1/anon/f34/f34-x86_64-rawhide-20210120",
+                "repos": [
+                  {
+                    "id": "default",
+                    "baseurl": "https://rpmrepo.osbuild.org/v1/anon/f34/f34-x86_64-rawhide-20210120"
+                  }
+                ],
+                "packages": [
+                  "@cloud-server-environment",
+                  "chrony",
+                  "dracut-config-generic",
+                  "grub2-pc",
+                  "kernel-core",
+                  "langpacks-en",
+                  "nss-altfiles",
+                  "ostree",
+                  "polkit",
+                  "rpm-ostree",
+                  "selinux-policy-targeted",
+                  "systemd-udev"
+                ],
+                "excludes": [
+                  "dracut-config-rescue"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "type": "org.osbuild.locale",
+          "options": {
+            "language": "en_US"
+          }
+        },
+        {
+          "type": "org.osbuild.ostree.preptree",
+          "options": {
+            "etc_group_members": [
+              "wheel",
+              "docker"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ostree-commit",
+      "build": "name:build",
+      "stages": [
+        {
+          "type": "org.osbuild.ostree.init",
+          "options": {
+            "path": "/repo"
+          }
+        },
+        {
+          "type": "org.osbuild.ostree.commit",
+          "inputs": {
+            "tree": {
+              "type": "org.osbuild.tree",
+              "origin": "org.osbuild.pipeline",
+              "references": [
+                "name:ostree-tree"
+              ]
+            }
+          },
+          "options": {
+            "ref": "fedora/x86_64/osbuild",
+            "os_version": "32"
+          }
+        }
+      ]
+    },
+    {
+      "name": "anaconda-tree",
+      "build": "name:build",
+      "stages": [
+        {
+          "type": "org.osbuild.rpm",
+          "inputs": {
+            "packages": {
+              "type": "org.osbuild.files",
+              "origin": "org.osbuild.source",
+              "mpp-depsolve": {
+                "architecture": "x86_64",
+                "module-platform-id": "f34",
+                "baseurl": "https://rpmrepo.osbuild.org/v1/anon/f34/f34-x86_64-rawhide-20210120",
+                "repos": [
+                  {
+                    "id": "default",
+                    "baseurl": "https://rpmrepo.osbuild.org/v1/anon/f34/f34-x86_64-rawhide-20210120"
+                  }
+                ],
+                "packages": [
+                  "anaconda",
+                  "anaconda-widgets",
+                  "kexec-tools-anaconda-addon",
+                  "anaconda-install-env-deps",
+                  "tmux",
+
+                  "fedora-release-iot",
+                  "fedora-logos",
+
+                  "dnf",
+                  "rpm-ostree",
+                  "ostree",
+                  "pigz",
+
+                  "kernel",
+                  "kernel-modules",
+                  "kernel-modules-extra",
+                  "grubby",
+
+                  "b43-openfwwf",
+                  "*-firmware",
+
+                  "glibc-all-langpacks",
+
+                  "plymouth",
+                  "anaconda-dracut", "dracut-network", "dracut-config-generic",
+
+                  "initscripts",
+                  "cryptsetup",
+                  "rpcbind",
+
+                  "kbd",
+                  "kbd-misc",
+
+                  "tar",
+                  "xz",
+                  "curl",
+                  "bzip2",
+
+                  "systemd-sysv",
+                  "systemd-units",
+                  "rsyslog",
+
+                  "xorg-x11-drivers",
+                  "xorg-x11-server-Xorg",
+                  "xorg-x11-server-utils",
+                  "xorg-x11-xauth",
+                  "dbus-x11",
+                  "metacity",
+                  "gsettings-desktop-schemas",
+                  "nm-connection-editor",
+                  "librsvg2",
+
+                  "btrfs-progs",
+                  "jfsutils",
+                  "xfsprogs",
+                  "reiserfs-utils",
+                  "gfs2-utils",
+                  "ntfs-3g",
+                  "ntfsprogs",
+                  "system-storage-manager",
+                  "device-mapper-persistent-data",
+                  "xfsdump",
+
+                  "udisks2",
+                  "udisks2-iscsi",
+                  "hostname",
+                  "fcoe-utils",
+
+                  "libblockdev-lvm-dbus",
+                  "volume_key",
+                  "nss-tools",
+
+                  "polkit-gnome",
+                  "zram-generator-defaults",
+
+                  "selinux-policy-targeted",
+                  "audit",
+
+                  "ethtool",
+                  "openssh-server",
+                  "nfs-utils",
+                  "openssh-clients",
+                  "tigervnc-server-minimal",
+                  "tigervnc-server-module",
+                  "net-tools",
+                  "bridge-utils",
+                  "nmap-ncat",
+
+                  "pciutils",
+                  "usbutils",
+                  "ipmitool",
+
+                  "mt-st",
+                  "smartmontools",
+                  "hdparm",
+
+                  "rng-tools",
+
+                  "aajohan-comfortaa-fonts",
+                  "abattis-cantarell-fonts",
+                  "bitmap-fangsongti-fonts",
+                  "dejavu-sans-fonts",
+                  "dejavu-sans-mono-fonts",
+                  "google-noto-sans-cjk-ttc-fonts",
+                  "google-noto-sans-gurmukhi-fonts",
+                  "google-noto-sans-sinhala-vf-fonts",
+                  "jomolhari-fonts",
+                  "khmeros-base-fonts",
+                  "lohit-assamese-fonts",
+                  "lohit-bengali-fonts",
+                  "lohit-devanagari-fonts",
+                  "lohit-gujarati-fonts",
+                  "lohit-kannada-fonts",
+                  "lohit-marathi-fonts",
+                  "lohit-odia-fonts",
+                  "lohit-tamil-fonts",
+                  "lohit-telugu-fonts",
+                  "madan-fonts",
+                  "paktype-naskh-basic-fonts",
+                  "sil-abyssinica-fonts",
+                  "sil-padauk-fonts",
+                  "sil-scheherazade-fonts",
+                  "smc-meera-fonts",
+                  "thai-scalable-waree-fonts",
+                  "xorg-x11-fonts-misc",
+
+                  "gdb-gdbserver",
+                  "libreport-plugin-bugzilla",
+                  "libreport-plugin-reportuploader",
+                  "fpaste",
+                  "python3-pyatspi",
+
+                  "nano", "nano-default-editor",
+                  "vim-minimal",
+                  "strace",
+                  "lsof",
+                  "dump",
+                  "xz",
+                  "less",
+                  "wget",
+                  "rsync",
+                  "bind-utils",
+                  "ftp",
+                  "mtr",
+                  "vconfig",
+                  "icfg",
+                  "spice-vdagent",
+                  "gdisk",
+                  "hexedit",
+                  "sg3_utils",
+
+
+                  "pcmciautils",
+                  "dmidecode",
+                  "libmlx4",
+                  "rdma-core",
+
+                  "grub2-tools-efi",
+                  "efibootmgr",
+                  "shim-x64", "grub2-efi-x64-cdboot",
+                  "shim-ia32", "grub2-efi-ia32-cdboot",
+                  "biosdevname", "memtest86+",
+                  "syslinux",
+                  "grub2-tools",
+                  "grub2-tools-minimal",
+                  "grub2-tools-extra"
+                ],
+                "excludes": [
+                  "midisport-firmware",
+                  "crystalhd-firmware",
+                  "ivtv-firmware",
+                  "cx18-firmware",
+                  "iscan-firmware",
+                  "uhd-firmware",
+                  "lulzbot-marlin-firmware",
+                  "gnome-firmware",
+                  "sigrok-firmware"
+                ]
+              }
+            }
+          },
+          "options": {
+            "gpgkeys": [
+              "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQINBF1RVqsBEADWMBqYv/G1r4PwyiPQCfg5fXFGXV1FCZ32qMi9gLUTv1CX7rYy\nH4Inj93oic+lt1kQ0kQCkINOwQczOkm6XDkEekmMrHknJpFLwrTK4AS28bYF2RjL\nM+QJ/dGXDMPYsP0tkLvoxaHr9WTRq89A+AmONcUAQIMJg3JxXAAafBi2UszUUEPI\nU35MyufFt2ePd1k/6hVAO8S2VT72TxXSY7Ha4X2J0pGzbqQ6Dq3AVzogsnoIi09A\n7fYutYZPVVAEGRUqavl0th8LyuZShASZ38CdAHBMvWV4bVZghd/wDV5ev3LXUE0o\nitLAqNSeiDJ3grKWN6v0qdU0l3Ya60sugABd3xaE+ROe8kDCy3WmAaO51Q880ZA2\niXOTJFObqkBTP9j9+ZeQ+KNE8SBoiH1EybKtBU8HmygZvu8ZC1TKUyL5gwGUJt8v\nergy5Bw3Q7av520sNGD3cIWr4fBAVYwdBoZT8RcsnU1PP67NmOGFcwSFJ/LpiOMC\npZ1IBvjOC7KyKEZY2/63kjW73mB7OHOd18BHtGVkA3QAdVlcSule/z68VOAy6bih\nE6mdxP28D4INsts8w6yr4G+3aEIN8u0qRQq66Ri5mOXTyle+ONudtfGg3U9lgicg\nz6oVk17RT0jV9uL6K41sGZ1sH/6yTXQKagdAYr3w1ix2L46JgzC+/+6SSwARAQAB\ntDFGZWRvcmEgKDMyKSA8ZmVkb3JhLTMyLXByaW1hcnlAZmVkb3JhcHJvamVjdC5v\ncmc+iQI4BBMBAgAiBQJdUVarAhsPBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAK\nCRBsEwJtEslE0LdAD/wKdAMtfzr7O2y06/sOPnrb3D39Y2DXbB8y0iEmRdBL29Bq\n5btxwmAka7JZRJVFxPsOVqZ6KARjS0/oCBmJc0jCRANFCtM4UjVHTSsxrJfuPkel\nvrlNE9tcR6OCRpuj/PZgUa39iifF/FTUfDgh4Q91xiQoLqfBxOJzravQHoK9VzrM\nNTOu6J6l4zeGzY/ocj6DpT+5fdUO/3HgGFNiNYPC6GVzeiA3AAVR0sCyGENuqqdg\nwUxV3BIht05M5Wcdvxg1U9x5I3yjkLQw+idvX4pevTiCh9/0u+4g80cT/21Cxsdx\n7+DVHaewXbF87QQIcOAing0S5QE67r2uPVxmWy/56TKUqDoyP8SNsV62lT2jutsj\nLevNxUky011g5w3bc61UeaeKrrurFdRs+RwBVkXmtqm/i6g0ZTWZyWGO6gJd+HWA\nqY1NYiq4+cMvNLatmA2sOoCsRNmE9q6jM/ESVgaH8hSp8GcLuzt9/r4PZZGl5CvU\neldOiD221u8rzuHmLs4dsgwJJ9pgLT0cUAsOpbMPI0JpGIPQ2SG6yK7LmO6HFOxb\nAkz7IGUt0gy1MzPTyBvnB+WgD1I+IQXXsJbhP5+d+d3mOnqsd6oDM/grKBzrhoUe\noNadc9uzjqKlOrmrdIR3Bz38SSiWlde5fu6xPqJdmGZRNjXtcyJlbSPVDIloxw==\n=QWRO\n-----END PGP PUBLIC KEY BLOCK-----\n"
+            ],
+            "exclude": {
+              "docs": true
+            },
+            "disable_dracut": true
+          }
+        },
+        {
+          "type": "org.osbuild.buildstamp",
+          "options": {
+            "arch": "x86_64",
+            "product": "Fedora-IoT",
+            "version": "34",
+            "variant": "iot",
+            "final": true,
+            "bugurl": "https://github.com/gicmo/ostree-osbuild-demo/issues"
+          }
+        },
+        {
+          "type": "org.osbuild.dracut",
+          "options": {
+            "kernel": [
+              "5.11.0-0.rc4.129.fc34.x86_64"
+            ],
+            "add_modules": [
+              "anaconda",
+              "convertfs",
+              "dmsquash-live",
+              "dmsquash-live-ntfs",
+              "livenet",
+              "pollcdrom",
+              "qemu",
+              "qemu-net"
+            ],
+            "install": [
+              "/.buildstamp"
+            ]
+          }
+        },
+        {
+          "type": "org.osbuild.locale",
+          "options": {
+            "language": "en_US"
+          }
+        },
+        {
+          "type": "org.osbuild.systemd",
+          "options": {
+            "enabled_services": [],
+            "disabled_services": [
+              "systemd-readahead-collect.service",
+              "systemd-readahead-replay.service",
+              "lvm2-monitor.service",
+              "dnf-makecache.timer"
+            ],
+            "masked_services": [
+              "fedora-configure.service",
+              "fedora-loadmodules.service",
+              "fedora-autorelabel.service",
+              "fedora-autorelabel-mark.service",
+              "fedora-wait-storage.service",
+              "media.mount",
+              "systemd-tmpfiles-clean.service",
+              "systemd-tmpfiles-clean.timer",
+              "ldconfig.service"
+            ],
+            "default_target": "anaconda.target"
+          }
+        },
+        {
+          "type": "org.osbuild.users",
+          "options": {
+            "users": {
+              "root": {
+                "password": ""
+              },
+              "install": {
+                "uid": 0,
+                "gid": 0,
+                "home": "/root",
+                "shell": "/usr/libexec/anaconda/run-anaconda",
+                "password": ""
+              }
+            }
+          }
+        },
+        {
+          "type": "org.osbuild.anaconda"
+        },
+        {
+          "type": "org.osbuild.ostree.init",
+          "options": {
+            "path": "/ostree/repo"
+          }
+        },
+        {
+          "type": "org.osbuild.ostree.pull",
+          "options": {
+            "repo": "/ostree/repo"
+          },
+          "inputs": {
+            "commits": {
+              "type": "org.osbuild.ostree",
+              "origin": "org.osbuild.pipeline",
+              "references": {
+                "name:ostree-commit": {
+                  "ref": "fedora/x86_64/osbuild"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "bootiso",
+      "build": "name:build",
+      "stages": [
+        {
+          "type": "org.osbuild.xorrisofs",
+          "inputs": {
+            "tree": {
+              "type": "org.osbuild.tree",
+              "origin": "org.osbuild.pipeline",
+              "references": [
+                "name:anaconda-tree"
+              ]
+            }
+          },
+          "options": {
+            "name": "Fedora-IoT",
+            "version": "34",
+            "architecture": "x86_64",
+            "filename": "fedora-iot-installer.iso",
+            "kernel": "5.11.0-0.rc4.129.fc34.x86_64",
+            "efi": {
+              "architectures": [
+                "IA32",
+                "X64"
+              ],
+              "vendor": "fedora"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
