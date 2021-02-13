@@ -281,7 +281,7 @@ def main(inputs, output_dir, options, workdir, loop_client):
     liveos = os.path.join(liveos_work, "LiveOS")
     os.makedirs(liveos)
 
-    rootfs_size = 3 * (1024*1024*1024) # GB
+    rootfs_size = 4 * (1024*1024*1024) # GB
     rootfs = os.path.join(liveos, "rootfs.img")
     make_rootfs(tree, rootfs, rootfs_size, workdir, loop_client)
 

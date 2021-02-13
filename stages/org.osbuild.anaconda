@@ -27,7 +27,7 @@ SCHEMA = """
 """
 
 
-KICKSTART = """
+KICKSTART = r"""
 # Kickstart defaults file for an interative install.
 # This is not loaded if a kickstart file is provided on the command line.
 firstboot --enable
@@ -123,25 +123,66 @@ def main(tree, _options):
     install("sshd_config.anaconda", "/etc/ssh/sshd_config.anaconda",
             tree=tree, root=configdir)
 
-    os.makedirs("{tree}/etc/NetworkManager/conf.d", exist_ok=True)
-    install("91-anaconda-autoconnect-slaves.conf", "/etc/NetworkManager/conf.d",
-            root=configdir, tree=tree)
-    install("vconsole.conf", "/etc", root=configdir, tree=tree)
-    install("92-anaconda-loglevel-debug.conf", "/etc/NetworkManager/conf.d",
-            root=configdir, tree=tree)
-    install("spice-vdagentd", "/etc/sysconfig",
-            root=configdir, tree=tree)
-    install("sysctl.conf", "/etc/sysctl.d/anaconda.conf",
-            root=configdir, tree=tree)
-    install("profile", "root/.profile",
-            root=configdir, tree=tree)
+    ## Setup mdadm config to turn off homehost
+    with open(f"{tree}/etc/mdadm.conf", "w") as f:
+        f.write("HOMEHOST <ignore>\n")
 
+    ## Make sure tmpfs is enabled
+    os.makedirs(f"{tree}/etc/systemd/system/local-fs.target.wants/", exist_ok=True)
+    os.symlink("/lib/systemd/system/tmp.mount", f"{tree}/etc/systemd/system/local-fs.target.wants/tmp.mount")
+
+
+    ## Start rngd
+    os.makedirs(f"{tree}/etc/systemd/system/basic.target.wants/", exist_ok=True)
+    os.symlink("/lib/systemd/system/rngd.service", f"{tree}/etc/systemd/system/basic.target.wants/rngd.service")
+
+    os.unlink(f"{tree}/usr/lib/systemd/system-generators/lvm2-activation-generator")
+
+    os.unlink(f"{tree}/usr/lib/tmpfiles.d/etc.conf")
+
+    ## Make logind activate anaconda-shell@.service on switch to empty VT
     os.unlink(f"{tree}/lib/systemd/system/autovt@.service")
     symlink("anaconda-shell@.service", "/lib/systemd/system/autovt@.service",
             tree=tree)
 
     replace(f"{tree}/etc/systemd/logind.conf",
             [("#ReserveVT=6", "ReserveVT=2")])
+
+    ## Don't write the journal to the overlay, just keep it in RAM
+    shutil.rmtree(f"{tree}/var/log/journal")
+
+    with open(f"{tree}/etc/fstab", "w") as f:
+        f.write("")
+
+    # basic config
+    install("i18n", "/etc/sysconfig",
+            root=configdir, tree=tree)
+
+    install("rsyslog.conf", "/etc",
+            root=configdir, tree=tree)
+
+    install("bash_history", "/root/.bash_history",
+            root=configdir, tree=tree)
+
+    install("profile", "/root/.profile",
+            root=configdir, tree=tree)
+
+    install("libuser.conf", "/etc",
+            root=configdir, tree=tree)
+
+    install("sysctl.conf", "/etc/sysctl.d/anaconda.conf",
+            root=configdir, tree=tree)
+
+    install("spice-vdagentd", "/etc/sysconfig",
+            root=configdir, tree=tree)
+
+    ## Network
+    os.makedirs("{tree}/etc/NetworkManager/conf.d", exist_ok=True)
+    install("91-anaconda-autoconnect-slaves.conf", "/etc/NetworkManager/conf.d",
+            root=configdir, tree=tree)
+    install("vconsole.conf", "/etc", root=configdir, tree=tree)
+    install("92-anaconda-loglevel-debug.conf", "/etc/NetworkManager/conf.d",
+            root=configdir, tree=tree)
 
     os.makedirs(os.path.join(tree, "etc/pam.d"), exist_ok=True)
     for f in ("sshd", "login", "remote"):
@@ -160,6 +201,21 @@ def main(tree, _options):
     symlink("/lib/modules", "/modules", tree=tree)
     symlink("/lib/firmware", "/firmware", tree=tree)
     symlink("../run/install", "/mnt/install", tree=tree)
+
+    with open(f"{tree}/etc/depmod.d/dd.conf", "a") as f:
+        f.write("search updates built-in")
+
+    with open(f"{tree}/etc/multipath.conf", "a") as f:
+        f.write("defaults {\n\tfind_multipaths smart\n\tuser_friendly_names yes\n}\n")
+        f.write("blacklist_exceptions {\n\tproperty \"(SCSI_IDENT_|ID_WWN)\"\n}\n")
+
+    ## make lvm auto-activate
+    shutil.rmtree(f"{tree}/etc/lvm/archive")
+    shutil.rmtree(f"{tree}/etc/lvm/backup")
+    shutil.rmtree(f"{tree}/etc/lvm/cache")
+
+    with open(f"{tree}/etc/lvm/lvm.conf", "w") as f:
+        f.write("global {\n\tuse_lvmetad = 1\n}\n")
 
     # the default kickstart file
     os.makedirs(f"{tree}/usr/share/anaconda/", exist_ok=True)
