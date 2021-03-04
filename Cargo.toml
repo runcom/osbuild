@@ -1,0 +1,12 @@
+[package]
+name = "osbuild-oxi"
+version = "0.1.0"
+authors = ["Christian Kellner <christian@kellner.me>"]
+edition = "2018"
+
+[dependencies]
+libc = "0.2"
+serde = "*"
+serde_json = "*"
+serde_derive = "*"
+tempfile = "3"
