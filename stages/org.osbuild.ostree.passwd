@@ -1,0 +1,68 @@
+#!/usr/bin/python3
+"""
+"""
+
+
+import os
+import shutil
+import sys
+import subprocess
+
+import osbuild.api
+
+
+SCHEMA_2 = """
+"options": {
+  "additionalProperties": false
+},
+"inputs": {
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["commits"],
+  "properties": {
+    "commits": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
+"""
+
+
+def ostree(*args, _input=None, **kwargs):
+    args = list(args) + [f'--{k}={v}' for k, v in kwargs.items()]
+    print("ostree " + " ".join(args), file=sys.stderr)
+    subprocess.run(["ostree"] + args,
+                   encoding="utf-8",
+                   stdout=sys.stderr,
+                   input=_input,
+                   check=True)
+
+
+def parse_input(inputs):
+    commits = inputs["commits"]
+    data = commits["data"]
+    refs = data["refs"]
+    assert refs, "Need at least one commit"
+    return commits["path"], data["refs"]
+
+
+# pylint: disable=too-many-statements
+def main(tree, inputs, _options):
+    source_root, commits = parse_input(inputs)
+
+    os.makedirs(os.path.join(tree, "etc"), exist_ok=True)
+    for commit, data in commits.items():
+        ref = data.get("path", commit).lstrip("/")
+        dest = os.path.join(source_root, ref)
+
+        passwd = os.path.join(dest, "usr/lib/passwd")
+        shutil.copy2(passwd, os.path.join(tree, "etc/passwd"))
+
+
+if __name__ == '__main__':
+    stage_args = osbuild.api.arguments()
+    r = main(stage_args["tree"],
+             stage_args["inputs"],
+             stage_args["options"])
+    sys.exit(r)
