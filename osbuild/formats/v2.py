@@ -126,6 +126,14 @@ def resolve_ref(name: str, manifest: Manifest) -> str:
     return target.id
 
 
+def load_device(name: str, description: Dict, index: Index, stage: Stage):
+    device_type = description["type"]
+    options = description.get("options", {})
+
+    info = index.get_module_info("Device", device_type)
+    stage.add_device(name, info, options)
+
+
 def load_input(name: str, description: Dict, index: Index, stage: Stage, manifest: Manifest):
     input_type = description["type"]
     origin = description["origin"]
@@ -158,6 +166,10 @@ def load_stage(description: Dict, index: Index, pipeline: Pipeline, manifest: Ma
     info = index.get_module_info("Stage", stage_type)
 
     stage = pipeline.add_stage(info, opts)
+
+    devs = description.get("devices", {})
+    for name, desc in devs.items():
+        load_device(name, desc, index, stage)
 
     ips = description.get("inputs", {})
     for name, desc in ips.items():

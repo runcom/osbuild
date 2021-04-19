@@ -10,6 +10,7 @@ from . import buildroot
 from . import objectstore
 from . import remoteloop
 from . import sources
+from .devices import Device
 from .inputs import Input
 from .sources import Source
 from .util import osrelease
@@ -43,6 +44,7 @@ class Stage:
         self.options = options
         self.checkpoint = False
         self.inputs = {}
+        self.devices = {}
 
     @property
     def name(self):
@@ -65,10 +67,16 @@ class Stage:
         self.inputs[name] = ip
         return ip
 
+    def add_device(self, name, info, options):
+        dev = Device(info, options)
+        self.devices[name] = dev
+        return dev
+
     def run(self, tree, runner, build_tree, store, monitor, libdir):
         with contextlib.ExitStack() as cm:
 
-            build_root = buildroot.BuildRoot(build_tree, runner, libdir, store.tmp)
+            build_root = buildroot.BuildRoot(
+                build_tree, runner, libdir, store.tmp)
             cm.enter_context(build_root)
 
             sources_tmp = store.tempdir(prefix="osbuild-sources-output-")
@@ -78,6 +86,7 @@ class Stage:
                 "tree": "/run/osbuild/tree",
                 "sources": "/run/osbuild/sources",
                 "options": self.options,
+                "devices": {},
                 "inputs": {},
                 "meta": {
                     "id": self.id
@@ -100,6 +109,11 @@ class Stage:
                 ro_binds += [f"{path}:{mapped}"]
 
                 args["inputs"][key] = {"path": mapped, "data": data}
+
+            for key, dev in self.devices.items():
+                print(f"Preparing {key} device")
+                reply = dev.run(build_root, tree)
+                args["devices"][key] = reply
 
             api = API(args, monitor)
             build_root.register_api(api)
@@ -146,7 +160,8 @@ class Pipeline:
         return self.stages[-1].id if self.stages else None
 
     def add_stage(self, info, options, sources_options=None):
-        stage = Stage(info, sources_options, self.build, self.id, options or {})
+        stage = Stage(info, sources_options, self.build,
+                      self.id, options or {})
         self.stages.append(stage)
         if self.assembler:
             self.assembler.base = stage.id
