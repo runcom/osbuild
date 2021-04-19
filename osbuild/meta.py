@@ -315,7 +315,7 @@ class ModuleInfo:
             "additionalProperties": False,
         }
 
-        if self.type in ("Stage", "Assembler"):
+        if self.type in ("Stage", "Assembler", "Device"):
             type_id = "type" if version == "2" else "name"
             opts = self._make_options(version)
             schema["properties"] = {
@@ -389,6 +389,7 @@ class ModuleInfo:
     def module_class_to_directory(klass: str) -> str:
         mapping = {
             "Assembler": "assemblers",
+            "Device": "devices",
             "Input": "inputs",
             "Source": "sources",
             "Stage": "stages",
@@ -507,7 +508,7 @@ class Index:
             with contextlib.suppress(FileNotFoundError):
                 with open(path, "r") as f:
                     schema = json.load(f)
-        elif klass in ["Assembler", "Input", "Source", "Stage"]:
+        elif klass in ["Assembler", "Device", "Input", "Source", "Stage"]:
             info = self.get_module_info(klass, name)
             if info:
                 schema = info.get_schema(version)
