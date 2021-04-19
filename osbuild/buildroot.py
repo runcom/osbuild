@@ -125,6 +125,14 @@ class BuildRoot(contextlib.AbstractContextManager):
         self._exitstack.close()
         self._exitstack = None
 
+    def atclose(self, func):
+        """TODO"""
+
+        if not self._exitstack:
+            raise RuntimeError("No active context")
+
+        self._exitstack.callback(func)
+
     def register_api(self, api: "BaseAPI"):
         """Register an API endpoint.
 
