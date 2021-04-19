@@ -1,0 +1,106 @@
+#!/usr/bin/python3
+"""
+Loopback devices
+"""
+
+
+import argparse
+import errno
+import json
+import os
+import sys
+
+from osbuild import loop
+
+
+SCHEMA = """
+"additionalProperties": true
+"""
+
+
+def make_loop(ctl: loop.LoopControl, fd: int, offset, sizelimit):
+    lo = loop.Loop(ctl.get_unbound())
+
+    if not sizelimit:
+        stat = os.fstat(fd)
+        sizelimit = stat.st_size - offset
+    else:
+        sizelimit *= 512
+
+    while True:
+        try:
+            lo.set_fd(fd)
+        except OSError as e:
+            lo.close()
+            if e.errno == errno.EBUSY:
+                continue
+            raise e
+        # `set_status` returns EBUSY when the pages from the previously
+        # bound file have not been fully cleared yet.
+        try:
+            lo.set_status(offset=offset, sizelimit=sizelimit, autoclear=False)
+        except BlockingIOError:
+            lo.clear_fd()
+            lo.close()
+            continue
+        break
+
+    return lo
+
+
+def do_open(_args):
+
+    data = json.load(sys.stdin)
+    tree = data["tree"]
+    devpath = data["dev"]
+    options = data["options"]
+    filename = options["filename"]
+    start = options.get("start", 0) * 512
+    size = options.get("size")
+
+    ctl = loop.LoopControl()
+
+    with open(os.path.join(tree, filename.lstrip("/")), "r+b") as fd:
+        lo = make_loop(ctl, fd.fileno(), start, size)
+
+    dir_fd = -1
+    try:
+        dir_fd = os.open(devpath, os.O_CLOEXEC | os.O_PATH)
+        lo.mknod(dir_fd)
+    finally:
+        if dir_fd > -1:
+            os.close(dir_fd)
+
+    data = {"path": lo.devname, "node": {"minor": lo.minor}}
+    json.dump(data, sys.stdout)
+    return 0
+
+
+def do_close(_args):
+    data = json.load(sys.stdin)
+    options = data["options"]
+    minor = options["node"]["minor"]
+
+    lo = loop.Loop(minor)
+    lo.clear_fd()
+    json.dump({}, sys.stdout)
+    return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Manage loopback devices')
+    parser.add_argument('command', type=str, choices=("open", "close"),
+                        help='an integer for the accumulator')
+    args = parser.parse_args()
+
+    if args.command == "open":
+        res = do_open(args)
+    elif args.command == "close":
+        res = do_close(args)
+
+    return res
+
+
+if __name__ == '__main__':
+    r = main()
+    sys.exit(r)

@@ -1,0 +1,175 @@
+#!/usr/bin/python3
+"""
+Install the actual grub2 boot loader
+"""
+
+
+import os
+import subprocess
+import shutil
+import struct
+import sys
+
+from typing import List, BinaryIO
+
+import osbuild.api
+
+
+SCHEMA = """
+"additionalProperties": false,
+"required": ["filename", "platform"],
+"properties": {
+  "location": {
+    "type": "integer",
+    "description": "location of the stage 2"
+  },
+  "platform": {
+    "type": "string",
+    "description": "Platfrom of the target system"
+  },
+  "filename": {
+    "type": "string",
+    "description": "filename of the disk image"
+  }
+}
+"""
+
+
+def grub2_partition_id(label):
+    """grub2 partition identifier for the partition table"""
+
+    label2grub = {
+        "mbr": "msdos",
+        "dos": "msdos",
+        "gpt": "gpt"
+    }
+
+    if label not in label2grub:
+        raise ValueError(f"Unknown partition type: {label}")
+
+    return label2grub[label]
+
+
+def patch_bios_boot(image_f, location, sector_size):
+    # The core image needs to know from where to load its
+    # second sector so that information needs to be embedded
+    # into the image itself at the right location, i.e.
+    # the "sector start parameter" ("size .long 2, 0"):
+    # 0x200 - GRUB_BOOT_MACHINE_LIST_SIZE (12) = 0x1F4 = 500
+    dest = location * sector_size + 500
+    print(f"sector start param: {dest} ({location} * 512 + 500)")
+    image_f.seek(dest)
+    image_f.write(struct.pack("<Q", location + 1))
+
+
+def grub2_write_boot_image(boot_f: BinaryIO,
+                           image_f: BinaryIO,
+                           core_location: int):
+    """Write the boot image (grub2 stage 1) to the MBR"""
+
+    # The boot.img file is 512 bytes, but we must only copy the first 440
+    # bytes, as these contain the bootstrapping code. The rest of the
+    # first sector contains the partition table, and must not be
+    # overwritten.
+    image_f.seek(0)
+    image_f.write(boot_f.read(440))
+
+    # Additionally, write the location (in sectors) of
+    # the grub core image, into the boot image, so the
+    # latter can find the former. To exact location is
+    # taken from grub2's "boot.S":
+    #  GRUB_BOOT_MACHINE_KERNEL_SECTOR 0x5c (= 92)
+    image_f.seek(0x5c)
+    image_f.write(struct.pack("<Q", core_location))
+
+
+def main(tree, options):
+    filename = options["filename"]
+    platform = options["platform"]
+    location = options["location"]
+    sector_size = options.get("sector-size", 512)
+
+    image = os.path.join(tree, filename.lstrip("/"))
+
+    boot_path = f"/usr/lib/grub/{platform}/boot.img"
+    core_path = "/var/tmp/grub2-core.img"
+
+    # Create the level-2 & 3 stages of the bootloader, aka the core
+    # it consists of the kernel plus the core modules required to
+    # to locate and load the rest of the grub modules, specifically
+    # the "normal.mod" (Stage 4) module.
+    # The exact list of modules required to be built into the core
+    # depends on the system: it is the minimal set needed to find
+    # read the partition and its filesystem containing said modules
+    # and the grub configuration [NB: efi systems work differently]
+
+    if platform == "i386-pc":
+        modules = ["biosdisk"]
+    else:
+        modules = []
+
+    pt_label = "gpt"
+
+    if pt_label in ["dos", "mbr"]:
+        modules += ["part_msdos"]
+    elif pt_label == "gpt":
+        modules += ["part_gpt"]
+
+    fs_type = "xfs"
+
+    if fs_type == "ext4":
+        modules += ["ext2"]
+    elif fs_type == "xfs":
+        modules += ["xfs"]
+    elif fs_type == "btrfs":
+        modules += ["btrfs"]
+    else:
+        raise ValueError(f"unknown boot filesystem type: '{fs_type}'")
+
+    grub_part_id = 2
+
+    partid = grub2_partition_id(pt_label) + str(grub_part_id + 1)
+    grub_path = "boot/grub2"
+
+    print(f"grub2 prefix {partid}")
+
+    # now created the core image
+    subprocess.run(["grub2-mkimage",
+                    "--verbose",
+                    "--directory", f"/usr/lib/grub/{platform}",
+                    "--prefix", f"(,{partid})/{grub_path}",
+                    "--format", platform,
+                    "--compression", "auto",
+                    "--output", core_path] +
+                   modules,
+                   check=True)
+
+    with open(image, "rb+") as image_f:
+        # Write the newly created grub2 core to the image
+        with open(core_path, "rb") as core_f:
+
+            core_size = os.fstat(core_f.fileno()).st_size
+            print(f"grub core size is {core_size}")
+
+            location_bytes = location * sector_size
+            print(f"wiring core to ({location}, {location_bytes})")
+            image_f.seek(location_bytes)
+            shutil.copyfileobj(core_f, image_f)
+
+            patch_bios_boot(image_f, location, sector_size)
+
+            # On certain platforms (x86) a level 1 boot loader is required
+            # to load to the core image (on ppc64le & Open Firmware this is
+            # done by the firmware itself)
+        if platform == "i386-pc":
+            # On x86, the boot image just jumps to core image
+            with open(boot_path, "rb") as boot_f:
+                grub2_write_boot_image(boot_f, image_f, location)
+
+    return 0
+
+
+if __name__ == '__main__':
+    args = osbuild.api.arguments()
+    r = main(args["tree"], args["options"])
+    sys.exit(r)
