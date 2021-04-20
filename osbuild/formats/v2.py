@@ -160,6 +160,13 @@ def load_input(name: str, description: Dict, index: Index, stage: Stage, manifes
         ip.add_reference(r, desc)
 
 
+def load_mount(name: str, description: Dict, stage: Stage):
+    device = description["device"]
+    target = description["target"]
+
+    stage.add_mount(name, device, target)
+
+
 def load_stage(description: Dict, index: Index, pipeline: Pipeline, manifest: Manifest):
     stage_type = description["type"]
     opts = description.get("options", {})
@@ -174,6 +181,10 @@ def load_stage(description: Dict, index: Index, pipeline: Pipeline, manifest: Ma
     ips = description.get("inputs", {})
     for name, desc in ips.items():
         load_input(name, desc, index, stage, manifest)
+
+    mounts = description.get("mounts", {})
+    for name, desc in mounts.items():
+        load_mount(name, desc, stage)
 
     return stage
 

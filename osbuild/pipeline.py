@@ -12,6 +12,7 @@ from . import remoteloop
 from . import sources
 from .devices import Device
 from .inputs import Input
+from .mounts import Mount
 from .sources import Source
 from .util import osrelease
 
@@ -45,6 +46,7 @@ class Stage:
         self.checkpoint = False
         self.inputs = {}
         self.devices = {}
+        self.mounts = {}
 
     @property
     def name(self):
@@ -72,8 +74,16 @@ class Stage:
         self.devices[name] = dev
         return dev
 
+    def add_mount(self, name, device, target):
+        mount = Mount(device, target)
+        self.mounts[name] = mount
+        return mount
+
     def run(self, tree, runner, build_tree, store, monitor, libdir):
         with contextlib.ExitStack() as cm:
+
+            mounts_tmp = store.tempdir(prefix="osbuild-mounts-")
+            mounts_root = cm.enter_context(mounts_tmp)
 
             build_root = buildroot.BuildRoot(
                 build_tree, runner, libdir, store.tmp)
@@ -88,6 +98,7 @@ class Stage:
                 "options": self.options,
                 "devices": {},
                 "inputs": {},
+                "mounts": {},
                 "meta": {
                     "id": self.id
                 }
@@ -96,6 +107,11 @@ class Stage:
             ro_binds = [
                 f"{self.info.path}:/run/osbuild/bin/{self.name}",
                 f"{sources_output}:/run/osbuild/sources"
+            ]
+
+            binds = [
+                os.fspath(tree) + ":/run/osbuild/tree",
+                mounts_root + ":/mounts"
             ]
 
             storeapi = objectstore.StoreServer(store)
@@ -115,6 +131,13 @@ class Stage:
                 reply = dev.run(build_root, tree)
                 args["devices"][key] = reply
 
+            for key, mount in self.mounts.items():
+                dev = args["devices"][mount.device]["path"]
+                path = os.path.join(build_root.dev, dev.lstrip("/"))
+                print(f"Preparing mount {key} ({dev})")
+                mount.mount(mounts_root, path)
+                build_root.atclose(mount.umount)
+
             api = API(args, monitor)
             build_root.register_api(api)
 
@@ -129,8 +152,11 @@ class Stage:
 
             r = build_root.run([f"/run/osbuild/bin/{self.name}"],
                                monitor,
-                               binds=[os.fspath(tree) + ":/run/osbuild/tree"],
+                               binds=binds,
                                readonly_binds=ro_binds)
+
+            # for mount in reversed(self.mounts.values()):
+            #    mount.umount()
 
         return BuildResult(self, r.returncode, r.output, api.metadata, api.error)
 
