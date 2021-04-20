@@ -1,0 +1,86 @@
+#!/usr/bin/python3
+"""
+Copy file system trees
+"""
+
+import os
+import subprocess
+import sys
+
+import osbuild.api
+
+
+SCHEMA_2 = r"""
+"options": {
+  "additionalProperties": false,
+  "required": ["paths"],
+  "properties": {
+    "paths": {
+    "description": "Array of items to copy",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "The source path",
+          "default": "/"
+        },
+        "to": {
+          "type": "string",
+          "description": "The destination path",
+          "default": "/"
+        }
+      }
+    }
+  }
+  }
+},
+"devices": {
+  "type": "object",
+  "additionalProperties": true
+},
+"mounts": {
+  "type": "object",
+  "additionalProperties": true
+},
+"inputs": {
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tree"],
+  "properties": {
+    "tree": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
+"""
+
+
+def main(inputs, tree, options):
+    tree = inputs["tree"]["path"]
+    items = options.get("paths", [{}])
+
+    subprocess.run(["df", "-h"], check=False)
+
+    for path in items:
+        src = path.get("from", "/")
+        dst = path.get("to", "/")
+
+        subprocess.run(["cp", "--reflink=auto", "-a",
+                        os.path.join(tree, src.lstrip("/")),
+                        os.path.join("/mounts", dst.lstrip("/"))],
+                       check=True)
+
+        subprocess.run(["sync", os.path.join(
+            "/mounts", dst.lstrip("/"))], check=True)
+
+    return 0
+
+
+if __name__ == '__main__':
+    args = osbuild.api.arguments()
+    r = main(args["inputs"], args["tree"], args["options"])
+    sys.exit(r)
