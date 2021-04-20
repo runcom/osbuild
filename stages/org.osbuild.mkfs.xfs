@@ -1,0 +1,62 @@
+#!/usr/bin/python3
+"""
+Construct an XFS file-system via make.xfs(8)
+"""
+
+
+import os
+import subprocess
+import sys
+
+
+import osbuild.api
+
+
+SCHEMA_2 = r"""
+"devices": {
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["device"],
+  "properties": {
+    "device": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+},
+"options": {
+  "additionalProperties": false,
+  "required": ["uuid"],
+  "properties": {
+    "uuid": {
+        "description": "UUID for the file system",
+        "type": "string"
+    },
+    "label": {
+        "description": "Label for the file system",
+        "type": "string"
+    }
+  }
+}
+"""
+
+
+def main(devices, options):
+    device = devices["device"]
+    path = os.path.join("/dev", device["path"])
+
+    uuid = options["uuid"]
+    label = options.get("label")
+    opts = []
+
+    if label:
+        opts = ["-L", label]
+
+    subprocess.run(["mkfs.xfs", "-m", f"uuid={uuid}"] + opts + [path],
+                   encoding='utf-8', check=True)
+
+
+if __name__ == '__main__':
+    args = osbuild.api.arguments()
+    ret = main(args["devices"], args["options"])
+    sys.exit(ret)
