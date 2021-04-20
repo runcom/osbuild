@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+"""
+Create, shrink or extend a file.
+"""
+
+import os
+import subprocess
+import sys
+
+import osbuild.api
+
+
+SCHEMA = """
+"additionalProperties": false,
+"required": ["filename", "size"],
+"properties": {
+  "filename": {
+    "description": "Image filename",
+    "type": "string"
+  },
+  "size": {
+    "description": "New desired size",
+    "type": "string"
+  }
+}
+"""
+
+
+def main(tree, options):
+    filename = options["filename"]
+    size = options["size"]
+
+    dest = os.path.join(tree, filename.lstrip("/"))
+
+    # TODO use os.truncate so we get proper error codes
+    res = subprocess.run(["truncate", "--size", size, dest], check=False)
+    return res.returncode
+
+
+if __name__ == '__main__':
+    args = osbuild.api.arguments()
+    ret = main(args["tree"], args["options"])
+    sys.exit(ret)
