@@ -177,11 +177,19 @@ def resolve_ref(name: str, manifest: Manifest) -> str:
 def load_device(name: str, description: Dict, index: Index, stage: Stage):
     device_type = description["type"]
     options = description.get("options", {})
+    parent = description.get("parent")
+
+    if parent:
+        device = stage.devices.get(parent)
+        if not parent:
+            raise ValueError(f"Unknown parent device: {parent}")
+        parent = device
 
     info = index.get_module_info("Device", device_type)
+
     if not info:
         raise TypeError(f"Missing meta information for {device_type}")
-    stage.add_device(name, info, options)
+    stage.add_device(name, info, parent, options)
 
 
 def load_input(name: str, description: Dict, index: Index, stage: Stage, manifest: Manifest):
