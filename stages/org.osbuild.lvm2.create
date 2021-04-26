@@ -1,0 +1,84 @@
+#!/usr/bin/python3
+"""
+Construct an XFS file-system via make.xfs(8)
+"""
+
+
+import os
+import subprocess
+import sys
+import uuid
+
+
+import osbuild.api
+
+
+SCHEMA_2 = r"""
+"devices": {
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["device"],
+  "properties": {
+    "device": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+},
+"options": {
+  "additionalProperties": true,
+  "required": ["volumes"],
+  "properties": {
+    "volumes": {
+      "type": "array",
+      "items": {
+        "description": "Logical volume",
+        "type": "object",
+        "required": ["name", "size"],
+        "properties": {
+          "name": {
+            "description": "The logical volume name",
+            "type": "string"
+          },
+          "size": {
+            "description": "The size of the logical volume",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+"""
+
+
+def main(devices, options):
+    device = devices["device"]
+    volumes = options["volumes"]
+    path = os.path.join("/dev", device["path"])
+
+    vg_name = "osbuild"  # str(uuid.uuid4())
+
+    subprocess.run(["pvcreate", path],
+                   encoding='utf-8', check=True)
+
+    subprocess.run(["vgcreate", vg_name, path],
+                   encoding='utf-8', check=True)
+
+    for volume in volumes:
+        name = volume["name"]
+        size = volume.get("size")
+        cmd = ["lvcreate", "-an"]
+
+        if size:
+            cmd += ["-l", size]
+
+        cmd += ["-n", name, vg_name]
+
+        subprocess.run(cmd, encoding='utf-8', check=True)
+
+
+if __name__ == '__main__':
+    args = osbuild.api.arguments()
+    ret = main(args["devices"], args["options"])
+    sys.exit(ret)
