@@ -1,0 +1,101 @@
+#!/usr/bin/python3
+"""
+Loopback devices
+"""
+
+
+import argparse
+import json
+import os
+import stat
+import subprocess
+import sys
+import uuid
+
+
+SCHEMA = """
+"additionalProperties": true
+"""
+
+
+def do_open(_args):
+
+    data = json.load(sys.stdin)
+    devpath = data["dev"]
+    parent = data["parent"]
+    options = data["options"]
+    passphrase = options["passphrase"]
+
+    parent_dev = os.path.join("/dev", parent["path"].lstrip("/"))
+
+    devname = "luks-" + str(uuid.uuid4())
+
+    # Make sure the logical volume is activated
+    res = subprocess.run(["cryptsetup", "-q", "open", parent_dev, devname],
+                         check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                         input=passphrase,
+                         encoding="UTF-8")
+    if res.returncode != 0:
+        json.dump({"error": res.stdout.strip()}, sys.stdout)
+        return 1
+
+    # Now that we have the volume group, find the specified logical volume and its device path
+    res = subprocess.run(["dmsetup", "info", "-c", "-o", "major,minor", "--noheadings", "--separator", ":", devname],
+                         check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                         encoding="UTF-8")
+
+    if res.returncode != 0:
+        json.dump({"error": res.stdout.strip()}, sys.stdout)
+        return 1
+    data = res.stdout.strip()
+    devnum = list(map(int, data.split(":")))
+    assert len(devnum) == 2
+    major, minor = devnum[0], devnum[1]
+
+    subpath = os.path.join("mapper", devname)
+
+    fullpath = os.path.join(devpath, subpath)
+    os.makedirs(os.path.join(devpath, "mapper"), exist_ok=True)
+    os.mknod(fullpath, 0o666 | stat.S_IFBLK, os.makedev(major, minor))
+
+    data = {"path": subpath,
+            "name": devname,
+            "node": {"major": major, "minor": minor}}
+    json.dump(data, sys.stdout)
+    return 0
+
+
+def do_close(_args):
+    data = json.load(sys.stdin)
+    options = data["options"]
+    name = options["name"]
+
+    # Make sure the logical volume is activated
+    res = subprocess.run(["cryptsetup", "-q", "close", name],
+                         check=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                         encoding="UTF-8")
+    if res.returncode != 0:
+        json.dump({"error": res.stdout.strip()}, sys.stdout)
+        return 1
+
+    json.dump({}, sys.stdout)
+    return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Manage crypt devices')
+    parser.add_argument('command', type=str, choices=("open", "close"),
+                        help='an integer for the accumulator')
+    args = parser.parse_args()
+
+    if args.command == "open":
+        res = do_open(args)
+    elif args.command == "close":
+        res = do_close(args)
+
+    return res
+
+
+if __name__ == '__main__':
+    r = main()
+    sys.exit(r)
