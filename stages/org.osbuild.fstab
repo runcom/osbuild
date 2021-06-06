@@ -11,6 +11,7 @@ This stage replaces /etc/fstab, removing any existing entries.
 """
 
 
+import subprocess
 import sys
 
 import osbuild.api
@@ -20,6 +21,10 @@ SCHEMA = """
 "additionalProperties": false,
 "required": ["filesystems"],
 "properties": {
+  "ostree": {
+    "osname": "fedora",
+    "ref": "fedora/x86_64/osbuild"
+  },
   "filesystems": {
     "type": "array",
     "description": "array of filesystem objects",
@@ -70,10 +75,48 @@ SCHEMA = """
 """
 
 
+def ostree(*args, _input=None, _stdout=None, **kwargs):
+    args = list(args) + [f'--{k}={v}' for k, v in kwargs.items()]
+    print("ostree " + " ".join(args), file=sys.stderr)
+
+    if _stdout is None:
+        _stdout = subprocess.PIPE
+
+    r = subprocess.run(["ostree"] + args,
+                       encoding="utf-8",
+                       stdout=_stdout,
+                       input=_input,
+                       check=True)
+
+    print(r.stdout)
+
+    return r
+
+
 def main(tree, options):
     filesystems = options["filesystems"]
+    ostree_options = options.get("ostree")
 
-    with open(f"{tree}/etc/fstab", "w") as f:
+    path = f"{tree}/etc/fstab"
+
+    if ostree_options:
+        osname = ostree_options["osname"]
+        ref = ostree_options["ref"]
+
+        repo = f"{tree}/ostree/repo"
+        commit = commit = ostree("rev-parse", ref, repo=repo).stdout.strip()
+
+        # this created a state root at `osname`
+        stateroot = f"{tree}/ostree/deploy/{osname}"
+
+        # now that we have a deployment, we do have a sysroot
+        sysroot = f"{stateroot}/deploy/{commit}.0"
+
+        print(f"ostree support active: sysroot: {sysroot}")
+
+        path = f"{sysroot}/etc/fstab"
+
+    with open(path, "w") as f:
         for filesystem in filesystems:
             uuid = filesystem.get("uuid")
             path = filesystem["path"]
