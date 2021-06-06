@@ -61,7 +61,6 @@ def parse_input(inputs):
     return commits["path"], data["refs"]
 
 
-# pylint: disable=too-many-statements
 def main(tree, inputs, options):
     source_repo, commits = parse_input(inputs)
     repo = options["repo"]
