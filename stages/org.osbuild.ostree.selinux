@@ -1,0 +1,89 @@
+#!/usr/bin/python3
+"""
+Fix SELinux labels for an OSTree deployment[1].
+
+[1] https://ostree.readthedocs.io/en/latest/manual/deployment/
+"""
+
+
+import os
+import sys
+
+import osbuild.api
+from osbuild.util import ostree
+from osbuild.util import selinux
+
+
+SCHEMA = """
+"required": ["osname", "ref"],
+"properties": {
+  "osname": {
+    "description": "Name of the stateroot to be used in the deployment",
+    "type": "string"
+  },
+  "ref": {
+    "description": "OStree ref to create and use for deployment",
+    "type": "string"
+  }
+}
+"""
+
+
+def main(tree, options):
+    osname = options["osname"]
+
+    ref = options["ref"]
+    repo = f"{tree}/ostree/repo"
+
+    commit = ostree.rev_parse(repo, ref)
+
+    # NB: if there are multiple commits, we deploy only
+    # the latest one
+
+    # this created a state root at `osname`
+    stateroot = f"{tree}/ostree/deploy/{osname}"
+
+    # now that we have a deployment, we do have a sysroot
+    sysroot = f"{stateroot}/deploy/{commit}.0"
+
+    # deploying a tree creates new files that need to be properly
+    # labeled for SELinux. In theory, ostree will take care of
+    # this by loading the SELinux config from the deployment and
+    # then applying the labels; but it does so conditionally on
+    # is_selinux_enabled(2), which in our container is FALSE
+    # Therefore we have to do the same dance as ostree does, at
+    # least for now, and manually re-label the affected paths
+    se_policy = None
+
+    for p in ["etc/selinux", "usr/etc/selinux"]:
+        se_home = os.path.join(sysroot, p)
+        cfgfile = os.path.join(se_home, "config")
+        if not os.path.isfile(cfgfile):
+            continue
+
+        with open(cfgfile, 'r') as f:
+            cfg = selinux.parse_config(f)
+        se_policy = selinux.config_get_policy(cfg)
+
+        if se_policy:
+            break
+
+    if not se_policy:
+        raise ValueError("Could not find SELinux policy")
+
+    spec = f"{se_home}/{se_policy}/contexts/files/file_contexts"
+    # kernel, initramfs & BLS config snippets were
+    # written to {tree}/boot
+    selinux.setfiles(spec, tree, "/boot")
+    # various config files will be created as a result
+    # of the 3-way configuration merge, see ostree(3)
+    selinux.setfiles(spec, sysroot, "/etc")
+    # if we populated /var, we need to fix its labels
+    selinux.setfiles(spec, stateroot, "/var")
+
+
+if __name__ == '__main__':
+    stage_args = osbuild.api.arguments()
+    r = main(stage_args["tree"],
+             stage_args["options"])
+    sys.exit(r)
