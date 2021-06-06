@@ -34,7 +34,6 @@
                   "tar",
                   "xfsprogs",
                   "xz",
-
                   "selinux-policy-targeted",
                   "genisoimage",
                   "isomd5sum",
