@@ -45,6 +45,9 @@ from osbuild import api
 SCHEMA = """
 "additionalProperties": false,
 "properties": {
+  "dbpath": {
+     "type": "string"
+  },
   "disable_dracut": {
     "description": "Prevent dracut from running",
     "type": "boolean"
@@ -102,6 +105,9 @@ SCHEMA_2 = """
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "dbpath": {
+      "type": "string"
+    },
     "gpgkeys": {
       "description": "Array of GPG key contents to import",
       "type": "array",
@@ -138,7 +144,7 @@ SCHEMA_2 = """
 """
 
 
-def generate_package_metadata(tree):
+def generate_package_metadata(tree, dbpath):
     query = r"""\{
     "name": "%{NAME}",
     "version": "%{VERSION}",
@@ -157,6 +163,10 @@ def generate_package_metadata(tree):
         "--root", tree,
         "--qf=" + query
     ]
+
+    if dbpath:
+        cmd += ["--define", f"_dbpath {dbpath}",  # quote the dbpath?
+                "--dbpath", dbpath]
 
     res = subprocess.run(cmd, stdout=subprocess.PIPE,
                          check=True, encoding="utf-8")
@@ -190,12 +200,20 @@ def enable_dracut(masked_files):
         os.unlink(path)
 
 
-def remove_unowned_etc_kernel(tree):
+def remove_unowned_etc_kernel(tree, dbpath):
     # if installed, /etc/kernel is owned by systemd-udev; but
     # in case the directory is un-owned, remove it again
-    res = subprocess.run(["rpm",
-                          "--root", tree,
-                          "-qf", "/etc/kernel"],
+    cmd = [
+        "rpm",
+        "--root", tree,
+        "-qf", "/etc/kernel"
+    ]
+
+    if dbpath:
+        cmd += ["--define", f"_dbpath {dbpath}",  # quote the dbpath?
+                "--dbpath", dbpath]
+
+    res = subprocess.run(cmd,
                          stdout=subprocess.PIPE,
                          check=False)
     owner = res.stdout.strip()
@@ -220,6 +238,14 @@ def parse_input(inputs):
 def main(tree, inputs, options):
     pkgpath, packages = parse_input(inputs)
 
+    extra_args = []
+
+    dbpath = options.get("dbpath")
+    if dbpath:
+        print(f"dbpath set to '{dbpath}'")
+        extra_args += ["--define", f"_dbpath {dbpath}",  # quote the dbpath?
+                       "--dbpath", dbpath]
+
     for key in options.get("gpgkeys", []):
         with tempfile.NamedTemporaryFile(prefix="gpgkey.", mode="w") as keyfile:
             keyfile.write(key)
@@ -227,6 +253,7 @@ def main(tree, inputs, options):
             subprocess.run([
                 "rpmkeys",
                 "--root", tree,
+                *extra_args,
                 "--import", keyfile.name
             ], check=True)
         print("imported gpg key")
@@ -236,6 +263,7 @@ def main(tree, inputs, options):
             subprocess.run([
                 "rpmkeys",
                 "--root", tree,
+                *extra_args,
                 "--checksig",
                 filename
             ], cwd=pkgpath, stdout=subprocess.DEVNULL, check=True)
@@ -260,8 +288,6 @@ def main(tree, inputs, options):
 
     subprocess.run(["/bin/sh", "-c", script], check=True)
 
-    extra_args = []
-
     if options.get("exclude", {}).get("docs"):
         extra_args += ["--excludedocs"]
 
@@ -284,10 +310,17 @@ def main(tree, inputs, options):
             "--install", manifest.name
         ], cwd=pkgpath, check=True)
 
+    # if a dbpath was set, create a macro that sets this globally so that
+    # future invocations of `rpm` and related tools can find the database
+    macrosdir = os.path.join(tree, "usr/lib/rpm/macros.d")
+    if dbpath and os.path.isdir(macrosdir):
+        with open(os.path.join(macrosdir, "macros.osbuild"), "w") as f:
+            f.write(f"%_dbpath {dbpath}\n")
+
     # re-enabled dracut
     if no_dracut:
         enable_dracut(masked_files)
-        remove_unowned_etc_kernel(tree)
+        remove_unowned_etc_kernel(tree, dbpath)
 
     # remove temporary machine ID if it was created by us
     if not machine_id_set_previously:
@@ -301,7 +334,7 @@ def main(tree, inputs, options):
         os.unlink(f"{tree}/var/lib/systemd/random-seed")
 
     # generate the metadata
-    md = generate_package_metadata(tree)
+    md = generate_package_metadata(tree, dbpath)
     api.metadata(md)
 
     return 0
