@@ -320,6 +320,39 @@
           }
         },
         {
+          "type": "org.osbuild.groups",
+          "options": {
+            "ostree": {
+              "deployment": {
+                "osname": "fedora",
+                "ref": "fedora/x86_64/osbuild"
+              }
+            },
+            "groups": {
+              "foo": {}
+            }
+          }
+        },
+        {
+          "type": "org.osbuild.users",
+          "options": {
+            "ostree": {
+              "deployment": {
+                "osname": "fedora",
+                "ref": "fedora/x86_64/osbuild"
+              }
+            },
+            "users": {
+              "gicmo": {
+                "password": "",
+                "groups": [
+                  "foo"
+                ]
+              }
+            }
+          }
+        },
+        {
           "type": "org.osbuild.ostree.selinux",
           "options": {
             "osname": "fedora",
