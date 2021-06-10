@@ -301,7 +301,22 @@
             ]
           }
         },
-
+        {
+          "type": "org.osbuild.users",
+          "options": {
+            "ostree": {
+              "deployment": {
+                "osname": "redhat",
+                "ref": "rhel/x86_64/osbuild"
+              }
+            },
+            "users": {
+              "root": {
+                "password": ""
+              }
+            }
+          }
+        },
         {
           "type": "org.osbuild.ostree.selinux",
           "options": {

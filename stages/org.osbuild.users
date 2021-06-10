@@ -16,11 +16,32 @@ import sys
 import os
 
 import osbuild.api
+from osbuild.util import ostree
 
 
 SCHEMA = """
 "additionalProperties": false,
 "properties": {
+  "ostree": {
+    "additionalProperties": false,
+    "type": "object",
+    "description": "Specify an OSTree deployment",
+    "properties": {
+      "deployment": {
+        "additionalProperties": false,
+        "type": "object",
+        "description": "Specify an OSTree deployment",
+        "properties": {
+          "osname": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
   "users": {
     "additionalProperties": false,
     "type": "object",
@@ -139,6 +160,24 @@ def add_ssh_key(root, user, key):
 
 def main(tree, options):
     users = options["users"]
+
+    ostree_options = options.get("ostree", {}).get("deployment")
+    if ostree_options:
+        osname = ostree_options["osname"]
+        ref = ostree_options["ref"]
+
+        repo = f"{tree}/ostree/repo"
+        commit = ostree.rev_parse(repo, ref)
+
+        # this created a state root at `osname`
+        stateroot = f"{tree}/ostree/deploy/{osname}"
+
+        # now that we have a deployment, we do have a sysroot
+        sysroot = f"{stateroot}/deploy/{commit}.0"
+
+        print(f"ostree support active: sysroot: {sysroot}")
+
+        tree = sysroot
 
     for name, user_options in users.items():
         uid = user_options.get("uid")
