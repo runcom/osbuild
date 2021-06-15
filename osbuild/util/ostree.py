@@ -125,3 +125,15 @@ def rev_parse(repo: PathLike, ref: str) -> str:
         raise RuntimeError(msg)
 
     return msg
+
+
+def sysroot_path(root: PathLike, osname: str, ref: str, deployment=None):
+    base = os.path.join(root, "ostree")
+
+    repo = os.path.join(base, "repo")
+    stateroot = os.path.join(base, "deploy", osname)
+
+    commit = rev_parse(repo, ref)
+    sysroot = f"{stateroot}/deploy/{commit}.0"
+
+    return sysroot
