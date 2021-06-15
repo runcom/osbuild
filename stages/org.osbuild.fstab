@@ -85,14 +85,7 @@ def main(tree, options):
         osname = ostree_options["osname"]
         ref = ostree_options["ref"]
 
-        repo = f"{tree}/ostree/repo"
-        commit = ostree.rev_parse(repo, ref)
-
-        # this created a state root at `osname`
-        stateroot = f"{tree}/ostree/deploy/{osname}"
-
-        # now that we have a deployment, we do have a sysroot
-        sysroot = f"{stateroot}/deploy/{commit}.0"
+        sysroot = ostree.sysroot_path(tree, osname, ref)
 
         print(f"ostree support active: sysroot: {sysroot}")
 
