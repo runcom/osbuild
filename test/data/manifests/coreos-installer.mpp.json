@@ -45,9 +45,17 @@
                   {
                     "id": "appstream",
                     "baseurl": "https://rpmrepo.osbuild.org/v2/mirror/rhvpn/el8/el8-x86_64-appstream-n8.5-20210526/"
+                  },
+                  {
+                    "id": "coi-runcom-22",
+                    "baseurl": "http://coprbe.devel.redhat.com/results/amurdaca/coreos-installer/rhel-8-x86_64/"
                   }
                 ],
                 "packages": [
+		  "xfsprogs",
+		  "bsdtar",
+		  "coreos-installer",
+		  "coreos-installer-bootinfra",
                   "dracut-config-generic",
                   "dracut-network",
                   "kernel",
@@ -81,6 +89,7 @@
                   "tar",
                   "ima-evm-utils",
                   "shim-x64",
+		  "ostree",
                   "microcode_ctl",
                   "iwl1000-firmware",
                   "iwl100-firmware",
@@ -99,6 +108,14 @@
             }
           }
         },
+	{
+          "type": "org.osbuild.systemd",
+          "options": {
+            "enabled_services": [
+              "coreos-installer"
+            ]
+          }
+        },
         {
           "type": "org.osbuild.dracut",
           "options": {
@@ -107,10 +124,15 @@
             ],
             "add_modules": [
               "qemu",
-              "qemu-net"
+              "qemu-net",
+	      "fs-lib",
+	      "network",
+	      "rdcore"
             ],
             "extra": [
-              "--uefi"
+              "--uefi",
+	      "--kernel-cmdline",
+	      "rd.neednet=1 console=tty0 console=ttyS0 coreos.inst.install_dev=/dev/vda coreos.inst.image_url=http://10.88.0.5/disk.img.xz coreos.inst.insecure"
             ]
           }
         }
