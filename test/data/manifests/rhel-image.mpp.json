@@ -41,9 +41,15 @@
                   {
                     "id": "appstream",
                     "baseurl": "https://rpmrepo.osbuild.org/v2/mirror/rhvpn/el8/el8-x86_64-appstream-n8.5-20210526/"
-                  }
+                  },
+		  {
+	            "id": "runcom",
+		    "baseurl": "http://coprbe.devel.redhat.com/results/amurdaca/coreos-installer/rhel-8-x86_64/"
+		  }
                 ],
                 "packages": [
+		  "bsdtar",
+		  "coreos-installer",
                   "redhat-release",
                   "glibc",
                   "glibc-minimal-langpack",
@@ -150,7 +156,8 @@
               "cloud-config",
               "cloud-final",
               "cloud-init",
-              "cloud-init-local"
+              "cloud-init-local",
+	      "coreos-installer"
             ]
           }
         },
