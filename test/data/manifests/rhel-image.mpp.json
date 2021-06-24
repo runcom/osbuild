@@ -49,7 +49,6 @@
                 ],
                 "packages": [
 		  "bsdtar",
-		  "coreos-installer",
                   "redhat-release",
                   "glibc",
                   "glibc-minimal-langpack",
@@ -156,8 +155,7 @@
               "cloud-config",
               "cloud-final",
               "cloud-init",
-              "cloud-init-local",
-	      "coreos-installer"
+              "cloud-init-local"
             ]
           }
         },
