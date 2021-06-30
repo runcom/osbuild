@@ -47,7 +47,7 @@
                     "baseurl": "https://rpmrepo.osbuild.org/v2/mirror/rhvpn/el8/el8-x86_64-appstream-n8.5-20210526/"
                   },
                   {
-                    "id": "coi-runcom-22",
+                    "id": "coi-runcom-23",
                     "baseurl": "http://coprbe.devel.redhat.com/results/amurdaca/coreos-installer/rhel-8-x86_64/"
                   }
                 ],
@@ -127,7 +127,9 @@
               "qemu-net",
 	      "fs-lib",
 	      "network",
-	      "rdcore"
+	      "rdcore",
+	      "url-lib",
+              "crypt-gpg"
             ],
             "extra": [
               "--uefi",
