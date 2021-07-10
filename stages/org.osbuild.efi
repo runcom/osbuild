@@ -60,19 +60,6 @@ SCHEMA_2 = """
         }
       }
     },
-    "isolinux": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["enabled"],
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "debug": {
-            "type": "boolean"
-        }
-      }
-    },
     "kernel_opts": {
       "description": "Additional kernel boot options",
       "type": "string"
@@ -123,9 +110,13 @@ SCHEMA_2 = """
 "inputs": {
   "type": "object",
   "additionalProperties": false,
-  "required": ["rootfs"],
+  "required": ["rootfs", "img"],
   "properties": {
     "rootfs": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "img": {
       "type": "object",
       "additionalProperties": true
     },
@@ -163,65 +154,15 @@ def replace(target, patterns):
             o.write(line)
     os.rename(newfile, target)
 
-def make_isolinux(cfg, root, info, tree):
-    # the config
-    configdir = info["configdir"]
-    version = info["version"]
-    name = info["name"]
-    cmdline = info["cmdline"]
-    kerneldir = info["kerneldir"]
-
-    # boot loader
-    isolinux = os.path.join(root, "isolinux")
-    os.makedirs(isolinux)
-
-    isolinuxfiles = [("isolinux.bin", 0o755),
-                     ("ldlinux.c32", 0o755),
-                     ("libcom32.c32", 0o755),
-                     ("libutil.c32", 0o755),
-                     ("vesamenu.c32", 0o755)]
-    for target, mode in isolinuxfiles:
-        src = os.path.join("/usr/share/syslinux/", target)
-        dst = os.path.join(isolinux, target)
-        install(src, dst, mode)
-
-    if cfg.get("debug"):
-        src = "/usr/share/syslinux/isolinux-debug.bin"
-        dst = os.path.join(isolinux, "isolinux.bin")
-        install(src, dst, 0o755)
-
-    for target in ["isolinux.cfg", "boot.msg", "grub.conf"]:
-        src = os.path.join(configdir, target)
-        dst = os.path.join(isolinux, target)
-        install(src, dst)
-
-        replace(dst, [
-            ("@VERSION@", version),
-            ("@PRODUCT@", name),
-            ("@ROOT@", cmdline)
-        ])
-
-    # src = os.path.join(tree, "usr/share/anaconda/boot/syslinux-splash.png")
-    # dst = os.path.join(isolinux, "splash.png")
-    # install(src, dst)
-
-    # link the kernel
-    os.link(os.path.join(kerneldir, "vmlinuz"),
-            os.path.join(isolinux, "vmlinuz"))
-    os.link(os.path.join(kerneldir, "initrd.img"),
-            os.path.join(isolinux, "initrd.img"))
-
 def make_efi(inputs, root, options, workdir, loop_client):
-    tree = inputs["rootfs"]["path"]
+    diskimgpath = inputs["img"]["path"]
     name = options["product"]["name"]
     version = options["product"]["version"]
     kernel = options["kernel"]
     isolabel = options["isolabel"]
     templates = options["templates"]
     efi = options.get("efi")
-    isolinux = options.get("isolinux", {})
     kopts = options.get("kernel_opts")
-    rootfs = options.get("rootfs", {})
 
     # input directories
     templatedir = os.path.join(LORAX_TEMPLATES, templates)
@@ -236,7 +177,6 @@ def make_efi(inputs, root, options, workdir, loop_client):
     cmdline = f"edge.liveiso={isolabel}"
     if kopts:
         cmdline += " " + kopts
-
 
     info = {
         "version": version,
@@ -262,11 +202,10 @@ def make_efi(inputs, root, options, workdir, loop_client):
     install(os.path.join(bootdir, f"initramfs-{kernel}.img"),
             os.path.join(kerneldir, "initrd.img"))
 
-    # TODO(runcom): fixes
+    install(os.path.join(diskimgpath, "disk.img.xz"),
+            os.path.join(root, "disk.img.xz"))
 
-    # iso linux boot
-    if isolinux.get("enabled"):
-        make_isolinux(isolinux, root, info, tree)
+    # TODO(runcom): fixes
 
     arches = efi["architectures"]
     vendor = efi["vendor"]
