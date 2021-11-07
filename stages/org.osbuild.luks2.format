@@ -1,0 +1,105 @@
+#!/usr/bin/python3
+"""
+Create an LUKS2 container via `cryptsetup`.
+
+This stage formats the given `device` to be a Linux Unified Key Setup,
+LUKS version 2, container and set the key to be `passphrase`. The uuid
+of the container must be specified via the coressponding option.
+
+Use the corresponding `org.osbuild.luks2` device to open the container
+during build.
+
+Buildhost commands used: `cryptsetup`.
+"""
+
+
+import os
+import subprocess
+import sys
+
+
+import osbuild.api
+
+
+SCHEMA_2 = r"""
+"devices": {
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["device"],
+  "properties": {
+    "device": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+},
+"options": {
+  "additionalProperties": false,
+  "required": ["passphrase", "uuid"],
+  "properties": {
+    "passphrase": {
+        "description": "Passphrase to use",
+        "type": "string"
+    },
+    "uuid": {
+      "description": "UUID for the LUKS device to use",
+      "type": "string"
+    },
+    "cipher": {
+      "description": "Cipher to use",
+      "type": "string"
+    },
+    "label": {
+      "description": "Label to use",
+      "type": "string"
+    },
+    "subsystem": {
+      "description": "Additional label",
+      "type": "string"
+    },
+    "sector-size": {
+      "description": "Sector size to use",
+      "type": "integer"
+    }
+  }
+}
+"""
+
+
+def main(devices, options):
+    device = devices["device"]
+    passphrase = options["passphrase"]
+    device_uuid = options["uuid"]
+    cipher = options.get("cipher")
+    label = options.get("label")
+    subsystem = options.get("subsystem", "")
+    sector_size = options.get("sector-size")
+    path = os.path.join("/dev", device["path"])
+
+    command = [
+        "cryptsetup",
+        "-q",  # batch mode
+        "--uuid", device_uuid,
+        "luksFormat",
+        "--type", "luks2",
+        "--force-password"
+    ]
+
+    if cipher:
+        command += ["--cipher", cipher]
+
+    if label:
+        command += ["--label", label, "--subsystem", subsystem]
+
+    if sector_size:
+        command += ["--sector-size", str(sector_size)]
+
+    subprocess.run(command + [path],
+                   encoding='utf-8', check=True,
+                   input=passphrase)
+
+
+if __name__ == '__main__':
+    args = osbuild.api.arguments()
+    ret = main(args["devices"], args["options"])
+    sys.exit(ret)
