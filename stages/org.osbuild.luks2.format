@@ -94,6 +94,8 @@ def main(devices, options):
     if sector_size:
         command += ["--sector-size", str(sector_size)]
 
+    command += ["--pbkdf-memory", "512000"]
+
     subprocess.run(command + [path],
                    encoding='utf-8', check=True,
                    input=passphrase)

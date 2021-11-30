@@ -20,6 +20,9 @@
                 "sha256:96b69aefaddfebbac3f9b6361b01cc71196e604a56fd9a6236317e63fb68664a": {},
                 "sha256:9a698a5991a08e23e87b4bce2f3e447eafdc7fd4d84a49d91c65c6045ead1e8e": {},
                 "sha256:bc66918c24175415a0f65803bccbb3d796d733acd319577a2417371a178ce193": {},
+                "sha256:9b79f81c6273fdc3c1b721c4c9568e956efdc387bbacac8d9f9fcfa6285c895d": {},
+                "sha256:cee43ee66662c4796878f806e3f0b25ba16d4626eb78dc242a124cb96c832080": {},
+                "sha256:56ef4126a5528638e44650d9ec7a3dcdc6e028def2b7dabf0025a800eb422d24": {},
                 "sha256:d23395e2614654c4cb717ec29cba2e61beec36bf815e74729ada20be41633caa": {},
                 "sha256:775b1498ba72e9d05a1c131fdbc2f4aabb8fd00d9c7c13ab996154e99660f92b": {},
                 "sha256:29cf7e97d6476fcfe80088a4c9cbc113d9b73e37dc9ec34967a958cef2d04e0c": {},
@@ -107,6 +110,9 @@
                 "sha256:3714a372bb59bcc89ba5d971cbf6eb025b3ff964825309f04fbc7d6366df8cf8": {},
                 "sha256:61d7e36ab4176e10126bf93b7f361d9387a59d7db6ae8ca30502c47936ce8ef5": {},
                 "sha256:50cd794b33acba6db3ced52a9367c2cca9f90e0a168acd10ba51e843e2a01b18": {},
+                "sha256:0c679ac467bc08e857adf5d1d8228e5a176fc06e74a3f30dbd5dab4843751163": {},
+                "sha256:7f30ae20db6fbfdc37d658b95d960388b1f7b01ddcf4b8d20fe115c325d4fa4d": {},
+                "sha256:ca111d57385ea7ebf2990149391b906df7b6472a7104b160571b4fa372e41438": {},
                 "sha256:f6829710ec06b6df70e98f39d197e66c3b42bf53443a83929651ef366f2aea14": {},
                 "sha256:23358562e993df9979f3923df15f3de2bf9af8e1159413278f2e83a0d4ae4446": {},
                 "sha256:e5a2f667e1bf1be38b54b5bac3fca499b8992de7a66d678a25d3e0128e3f1587": {},
@@ -147,9 +153,11 @@
                 "sha256:09120849da152fbfaab1d2ae692573b5546ec0f80afbb41bfc2c4803a2c9e4d9": {},
                 "sha256:8cfc18fd5efca16eceabda05065f052c64f4ff3c970bf094d884c26582ade259": {},
                 "sha256:548b4a613871eae170711e83e7dc2cc5a6eae5536879bbe9291be8f723bc102a": {},
+                "sha256:8a4769e6ebcee759ed329be1abe2e6e0276aee3848e63525c2b400185e23bbea": {},
                 "sha256:e5cbfb4aca5f7a97f08fc86b83c5ec57423a32a39de6d4909ce0126ed15f4cd4": {},
                 "sha256:ab75c02d93cec64e749fc52ecf37c46f9a83f6fe1f64b421f8c8c2edd87b5644": {},
                 "sha256:5730480584e64460dc3821e7e6b45a8d34c14d7361e851cf3ab7afabb104e2ad": {},
+                "sha256:394c79783d776e9a8d8f6504c6c395250f4fabaad7f80adf703283e3f8f76040": {},
                 "sha256:178803f7e3d908c873e60055ca6b9fb13aaa03b84163b4a553eaa27896575df4": {},
                 "sha256:ff16ef3ab82ad4c43f743e4f2569988b4ca2fcd8018cf048d856847687c3a16a": {},
                 "sha256:b071acbbf8ecb0a7f48a2f41f13f85173bf98076f69bd925d4f9c1d67387226c": {},
@@ -199,6 +207,7 @@
                 "sha256:5ed9093c6368733f9aecfe56b029246929047c1de33ca035fbcd0c210bae4051": {},
                 "sha256:b14d332c9d9fd66afeb9c3064db3955b7667f4cf3e85d7f76439eeba63fff488": {},
                 "sha256:1a2aaf60c22453df0c306a5618aca20a2ce19090525445037a667f468b8ceaab": {},
+                "sha256:8154925d29a8b734c36360e3904059f3b94e602992147b748871d76e608936fa": {},
                 "sha256:6b215bdf0227e676436a3056969d68acbd329ee3fcccb46873fee31d6f1bafe8": {},
                 "sha256:b4c0a61643aa825845887cf39f780fa2862f629f980c095704c059b5418dba20": {},
                 "sha256:da676955f475492f17c573bc526d47c37e34919d2a6ed33ec4573a4de0cab2a7": {},
@@ -213,6 +222,7 @@
                 "sha256:8c9400c01548aa4d4dcfe464bf266ff2fdd31a14c2b5d2b06000084871b54db7": {},
                 "sha256:01008af0d9f6a5b328ff2d5380e3a22f4e2cb31f2e44e4604fbd1f77b25d721c": {},
                 "sha256:b918d4670e1e519b18e2f5fc087e129581b496afe0cd987089183dba23a52406": {},
+                "sha256:346e30cb9cc8a3acac768a72672d5ca247d844dccd3b890677e93aed5e0e8b9c": {},
                 "sha256:16e64d3a4be39a86023f08ce4500166640e0bfe4f47b2f04db511a5f4eaf4088": {},
                 "sha256:1eb8ababeb9d9804ee8a3960839c20ce24e280e9bea461239ab20d560744d2f4": {},
                 "sha256:98cb29680e00e102bd8e6ba1e8b079291823fd64a0e4adaf7631710e690bd27d": {},
@@ -302,6 +312,7 @@
                 "sha256:be78d78dae06e59d0d6db4d32e7a821b84b065ee945c7ee7f7d14df26e647aff": {},
                 "sha256:5feaa22dd7e7e603e066de5e1f23936ace7a73b45d31d53d7e800549009a3c4a": {},
                 "sha256:7b574e38bfd9854f3a4411a73df63c32d65cd0511577461cc2596049501a3725": {},
+                "sha256:f26e61db24e4c913f7f1f92dd753090098753f2683921b2a02383eb6110b7da7": {},
                 "sha256:931b63fc3d41174ad24868e4db8d216ee21711ca7ade359ea730988ef2baba2a": {},
                 "sha256:019c0bdb989459f7aed88f534cf96af8e720cb5a0ffa7d514f6b8de5e62eb9e3": {},
                 "sha256:b53a61b34e0bc3cc693bcb82e1e494d201098db149dd38106cb97b6923ec3093": {},
@@ -331,6 +342,76 @@
           }
         },
         {
+          "type": "org.osbuild.copy",
+          "inputs": {
+            "inlinefile": {
+              "type": "org.osbuild.files",
+              "origin": "org.osbuild.source",
+              "references": {
+                "sha256:9d6acf30c846f8edf693cd5448d415b7f335889bbda9db3aad16faa0bdc8e248": {}
+              }
+            }
+          },
+          "options": {
+            "paths": [
+              {
+                "from": "input://inlinefile/sha256:9d6acf30c846f8edf693cd5448d415b7f335889bbda9db3aad16faa0bdc8e248",
+                "to": "tree:///usr/bin/clevis-encrypt-null"
+              }
+            ]
+          }
+        },
+        {
+          "type": "org.osbuild.copy",
+          "inputs": {
+            "inlinefile": {
+              "type": "org.osbuild.files",
+              "origin": "org.osbuild.source",
+              "references": {
+                "sha256:44c08953f5408108cc8e39124469575d8cf3e4c8b76b5fc354f2e4cd73abfc30": {}
+              }
+            }
+          },
+          "options": {
+            "paths": [
+              {
+                "from": "input://inlinefile/sha256:44c08953f5408108cc8e39124469575d8cf3e4c8b76b5fc354f2e4cd73abfc30",
+                "to": "tree:///usr/bin/clevis-decrypt-null"
+              }
+            ]
+          }
+        },
+        {
+          "type": "org.osbuild.copy",
+          "inputs": {
+            "inlinefile": {
+              "type": "org.osbuild.files",
+              "origin": "org.osbuild.source",
+              "references": {
+                "sha256:f128ed8ab1e016e5ecf9b0d0e87697e04667b6553c301fd1cf659266b7eb4324": {}
+              }
+            }
+          },
+          "options": {
+            "paths": [
+              {
+                "from": "input://inlinefile/sha256:f128ed8ab1e016e5ecf9b0d0e87697e04667b6553c301fd1cf659266b7eb4324",
+                "to": "tree:///module-setup.sh"
+              }
+            ]
+          }
+        },
+        {
+          "type": "org.osbuild.chmod",
+          "options": {
+            "items": {
+              "/usr/bin/clevis-encrypt-null": {
+                "mode": "a+x"
+              }
+            }
+          }
+        },
+        {
           "type": "org.osbuild.selinux",
           "options": {
             "file_contexts": "etc/selinux/targeted/contexts/files/file_contexts",
@@ -355,6 +436,9 @@
         "sha256:96b69aefaddfebbac3f9b6361b01cc71196e604a56fd9a6236317e63fb68664a": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/b/bubblewrap-0.4.1-3.fc34.x86_64.rpm",
         "sha256:9a698a5991a08e23e87b4bce2f3e447eafdc7fd4d84a49d91c65c6045ead1e8e": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/b/bzip2-libs-1.0.8-6.fc34.x86_64.rpm",
         "sha256:bc66918c24175415a0f65803bccbb3d796d733acd319577a2417371a178ce193": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/c/ca-certificates-2020.2.41-7.fc34.noarch.rpm",
+        "sha256:9b79f81c6273fdc3c1b721c4c9568e956efdc387bbacac8d9f9fcfa6285c895d": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/c/clevis-16-2.fc34.x86_64.rpm",
+        "sha256:cee43ee66662c4796878f806e3f0b25ba16d4626eb78dc242a124cb96c832080": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/c/clevis-luks-16-2.fc34.x86_64.rpm",
+        "sha256:56ef4126a5528638e44650d9ec7a3dcdc6e028def2b7dabf0025a800eb422d24": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/c/clevis-pin-tpm2-0.3.0-1.fc34.x86_64.rpm",
         "sha256:d23395e2614654c4cb717ec29cba2e61beec36bf815e74729ada20be41633caa": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/c/compat-readline5-5.2-39.fc34.x86_64.rpm",
         "sha256:775b1498ba72e9d05a1c131fdbc2f4aabb8fd00d9c7c13ab996154e99660f92b": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/c/coreutils-8.32-21.fc34.x86_64.rpm",
         "sha256:29cf7e97d6476fcfe80088a4c9cbc113d9b73e37dc9ec34967a958cef2d04e0c": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/c/coreutils-common-8.32-21.fc34.x86_64.rpm",
@@ -442,6 +526,9 @@
         "sha256:3714a372bb59bcc89ba5d971cbf6eb025b3ff964825309f04fbc7d6366df8cf8": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/i/inih-49-3.fc34.x86_64.rpm",
         "sha256:61d7e36ab4176e10126bf93b7f361d9387a59d7db6ae8ca30502c47936ce8ef5": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/i/iptables-libs-1.8.7-3.fc34.x86_64.rpm",
         "sha256:50cd794b33acba6db3ced52a9367c2cca9f90e0a168acd10ba51e843e2a01b18": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/i/isomd5sum-1.2.3-12.fc34.x86_64.rpm",
+        "sha256:0c679ac467bc08e857adf5d1d8228e5a176fc06e74a3f30dbd5dab4843751163": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/j/jansson-2.13.1-2.fc34.x86_64.rpm",
+        "sha256:7f30ae20db6fbfdc37d658b95d960388b1f7b01ddcf4b8d20fe115c325d4fa4d": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/j/jose-10-9.fc34.x86_64.rpm",
+        "sha256:ca111d57385ea7ebf2990149391b906df7b6472a7104b160571b4fa372e41438": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/j/jq-1.6-7.fc34.x86_64.rpm",
         "sha256:f6829710ec06b6df70e98f39d197e66c3b42bf53443a83929651ef366f2aea14": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/j/json-c-0.14-8.fc34.x86_64.rpm",
         "sha256:23358562e993df9979f3923df15f3de2bf9af8e1159413278f2e83a0d4ae4446": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/j/json-glib-1.6.2-1.fc34.x86_64.rpm",
         "sha256:e5a2f667e1bf1be38b54b5bac3fca499b8992de7a66d678a25d3e0128e3f1587": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/k/kbd-2.4.0-2.fc34.x86_64.rpm",
@@ -482,9 +569,11 @@
         "sha256:09120849da152fbfaab1d2ae692573b5546ec0f80afbb41bfc2c4803a2c9e4d9": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libidn2-2.3.0-5.fc34.x86_64.rpm",
         "sha256:8cfc18fd5efca16eceabda05065f052c64f4ff3c970bf094d884c26582ade259": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libisoburn-1.5.4-1.fc34.x86_64.rpm",
         "sha256:548b4a613871eae170711e83e7dc2cc5a6eae5536879bbe9291be8f723bc102a": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libisofs-1.5.4-1.fc34.x86_64.rpm",
+        "sha256:8a4769e6ebcee759ed329be1abe2e6e0276aee3848e63525c2b400185e23bbea": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libjose-10-9.fc34.x86_64.rpm",
         "sha256:e5cbfb4aca5f7a97f08fc86b83c5ec57423a32a39de6d4909ce0126ed15f4cd4": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libkcapi-1.2.1-1.fc34.x86_64.rpm",
         "sha256:ab75c02d93cec64e749fc52ecf37c46f9a83f6fe1f64b421f8c8c2edd87b5644": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libkcapi-hmaccalc-1.2.1-1.fc34.x86_64.rpm",
         "sha256:5730480584e64460dc3821e7e6b45a8d34c14d7361e851cf3ab7afabb104e2ad": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libksba-1.5.0-2.fc34.x86_64.rpm",
+        "sha256:394c79783d776e9a8d8f6504c6c395250f4fabaad7f80adf703283e3f8f76040": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libluksmeta-9-10.fc34.x86_64.rpm",
         "sha256:178803f7e3d908c873e60055ca6b9fb13aaa03b84163b4a553eaa27896575df4": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libmetalink-0.1.3-14.fc34.x86_64.rpm",
         "sha256:ff16ef3ab82ad4c43f743e4f2569988b4ca2fcd8018cf048d856847687c3a16a": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libmnl-1.0.4-13.fc34.x86_64.rpm",
         "sha256:b071acbbf8ecb0a7f48a2f41f13f85173bf98076f69bd925d4f9c1d67387226c": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/libmodulemd-2.12.0-2.fc34.x86_64.rpm",
@@ -534,6 +623,7 @@
         "sha256:5ed9093c6368733f9aecfe56b029246929047c1de33ca035fbcd0c210bae4051": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/lorax-34.9-5.fc34.x86_64.rpm",
         "sha256:b14d332c9d9fd66afeb9c3064db3955b7667f4cf3e85d7f76439eeba63fff488": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/lorax-templates-generic-34.9-5.fc34.x86_64.rpm",
         "sha256:1a2aaf60c22453df0c306a5618aca20a2ce19090525445037a667f468b8ceaab": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/lua-libs-5.4.2-2.fc34.x86_64.rpm",
+        "sha256:8154925d29a8b734c36360e3904059f3b94e602992147b748871d76e608936fa": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/luksmeta-9-10.fc34.x86_64.rpm",
         "sha256:6b215bdf0227e676436a3056969d68acbd329ee3fcccb46873fee31d6f1bafe8": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/lvm2-2.03.11-1.fc34.x86_64.rpm",
         "sha256:b4c0a61643aa825845887cf39f780fa2862f629f980c095704c059b5418dba20": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/lvm2-libs-2.03.11-1.fc34.x86_64.rpm",
         "sha256:da676955f475492f17c573bc526d47c37e34919d2a6ed33ec4573a4de0cab2a7": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/l/lz4-libs-1.9.3-2.fc34.x86_64.rpm",
@@ -548,6 +638,7 @@
         "sha256:8c9400c01548aa4d4dcfe464bf266ff2fdd31a14c2b5d2b06000084871b54db7": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/n/ncurses-libs-6.2-4.20200222.fc34.x86_64.rpm",
         "sha256:01008af0d9f6a5b328ff2d5380e3a22f4e2cb31f2e44e4604fbd1f77b25d721c": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/n/nettle-3.7.2-1.fc34.x86_64.rpm",
         "sha256:b918d4670e1e519b18e2f5fc087e129581b496afe0cd987089183dba23a52406": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/n/npth-1.6-6.fc34.x86_64.rpm",
+        "sha256:346e30cb9cc8a3acac768a72672d5ca247d844dccd3b890677e93aed5e0e8b9c": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/o/oniguruma-6.9.6-1.fc34.2.x86_64.rpm",
         "sha256:16e64d3a4be39a86023f08ce4500166640e0bfe4f47b2f04db511a5f4eaf4088": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/o/openldap-2.4.57-2.fc34.x86_64.rpm",
         "sha256:1eb8ababeb9d9804ee8a3960839c20ce24e280e9bea461239ab20d560744d2f4": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/o/openssl-libs-1.1.1k-1.fc34.x86_64.rpm",
         "sha256:98cb29680e00e102bd8e6ba1e8b079291823fd64a0e4adaf7631710e690bd27d": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/o/openssl-pkcs11-0.4.11-2.fc34.x86_64.rpm",
@@ -637,6 +728,7 @@
         "sha256:be78d78dae06e59d0d6db4d32e7a821b84b065ee945c7ee7f7d14df26e647aff": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/s/systemd-rpm-macros-248-2.fc34.noarch.rpm",
         "sha256:5feaa22dd7e7e603e066de5e1f23936ace7a73b45d31d53d7e800549009a3c4a": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/s/systemd-udev-248-2.fc34.x86_64.rpm",
         "sha256:7b574e38bfd9854f3a4411a73df63c32d65cd0511577461cc2596049501a3725": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/t/tar-1.34-1.fc34.x86_64.rpm",
+        "sha256:f26e61db24e4c913f7f1f92dd753090098753f2683921b2a02383eb6110b7da7": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/t/tpm2-tools-5.0-2.fc34.x86_64.rpm",
         "sha256:931b63fc3d41174ad24868e4db8d216ee21711ca7ade359ea730988ef2baba2a": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/t/tpm2-tss-3.0.3-2.fc34.x86_64.rpm",
         "sha256:019c0bdb989459f7aed88f534cf96af8e720cb5a0ffa7d514f6b8de5e62eb9e3": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/t/trousers-0.3.15-2.fc34.x86_64.rpm",
         "sha256:b53a61b34e0bc3cc693bcb82e1e494d201098db149dd38106cb97b6923ec3093": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/t/trousers-lib-0.3.15-2.fc34.x86_64.rpm",
@@ -653,6 +745,22 @@
         "sha256:f31a3bafd2e4ef16ca7d51fe792c59c1b36bf5efbcbd0ca631472b37e0a8b970": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/x/xz-lzma-compat-5.2.5-5.fc34.x86_64.rpm",
         "sha256:aa2696cbb562dccf02732a581d94b33da26c682d53b5611095c4b130a2b41635": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/z/zchunk-libs-1.1.9-2.fc34.x86_64.rpm",
         "sha256:0ebe43a9bef7ec2dc4cb98350fbde2e55dae886f905e2d9cea837da3fb613c87": "https://rpmrepo.osbuild.org/v2/mirror/public/f34/f34-x86_64-fedora-20210512/Packages/z/zlib-1.2.11-26.fc34.x86_64.rpm"
+      }
+    },
+    "org.osbuild.inline": {
+      "items": {
+        "sha256:9d6acf30c846f8edf693cd5448d415b7f335889bbda9db3aad16faa0bdc8e248": {
+          "encoding": "base64",
+          "data": "IyEvYmluL2Jhc2ggLWUKIyB2aW06IHNldCB0YWJzdG9wPTggc2hpZnR3aWR0aD00IHNvZnR0YWJzdG9wPTQgZXhwYW5kdGFiIHNtYXJ0dGFiIGNvbG9yY29sdW1uPTgwOgojCiMgQ29weXJpZ2h0IChjKSAyMDE3IFJlZCBIYXQsIEluYy4KIyBBdXRob3I6IE5hdGhhbmllbCBNY0NhbGx1bSA8bnBtY2NhbGx1bUByZWRoYXQuY29tPgojCiMgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU6IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKIyBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQojIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIGVpdGhlciB2ZXJzaW9uIDMgb2YgdGhlIExpY2Vuc2UsIG9yCiMgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KIwojIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAojIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCiMgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZQojIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCiMKIyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQojIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtLiAgSWYgbm90LCBzZWUgPGh0dHA6Ly93d3cuZ251Lm9yZy9saWNlbnNlcy8+LgojCgpbICQjIC1lcSAxIC1hICIkMSIgPT0gIi0tc3VtbWFyeSIgXSAmJiBleGl0IDEKCmlmICEgY2ZnPWBqb3NlIGZtdCAtaiAiJDEiIC1Pby0gMj4vZGV2L251bGxgOyB0aGVuCiAgICBlY2hvICJDb25maWd1cmF0aW9uIGlzIG1hbGZvcm1lZCEiID4mMgogICAgZXhpdCAxCmZpCgpqd2s9YGpvc2UgandrIGdlbiAtaSAneyJhbGciOiJBMjU2R0NNIn0nYApqd2U9J3sicHJvdGVjdGVkIjp7ImNsZXZpcyI6eyJwaW4iOiJudWxsIiwibnVsbCI6e319fX0nCgppZiAhIGpvc2UgZm10IC1qICIkY2ZnIiAtZyBmYWlsIC1UOyB0aGVuCiAgICBqd2U9YGpvc2UgZm10IC1qICIkandlIiAtT2cgcHJvdGVjdGVkIC1nIGNsZXZpcyAtZyBudWxsIC1qICIkandrIiAtT3MgandrIC1VVVVVby1gCmZpCgpleGVjIGpvc2UgandlIGVuYyAtaS0gLWstIC1JLSAtYyA8IDwoZWNobyAtbiAiJGp3ZSRqd2siOyBjYXQpCg=="
+        },
+        "sha256:44c08953f5408108cc8e39124469575d8cf3e4c8b76b5fc354f2e4cd73abfc30": {
+          "encoding": "base64",
+          "data": "IyEvYmluL2Jhc2ggLWUKIyB2aW06IHNldCB0YWJzdG9wPTggc2hpZnR3aWR0aD00IHNvZnR0YWJzdG9wPTQgZXhwYW5kdGFiIHNtYXJ0dGFiIGNvbG9yY29sdW1uPTgwOgojCiMgQ29weXJpZ2h0IChjKSAyMDE3IFJlZCBIYXQsIEluYy4KIyBBdXRob3I6IE5hdGhhbmllbCBNY0NhbGx1bSA8bnBtY2NhbGx1bUByZWRoYXQuY29tPgojCiMgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU6IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKIyBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQojIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIGVpdGhlciB2ZXJzaW9uIDMgb2YgdGhlIExpY2Vuc2UsIG9yCiMgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KIwojIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAojIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCiMgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZQojIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCiMKIyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQojIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtLiAgSWYgbm90LCBzZWUgPGh0dHA6Ly93d3cuZ251Lm9yZy9saWNlbnNlcy8+LgojCgpbICQjIC1lcSAxIC1hICIkMSIgPT0gIi0tc3VtbWFyeSIgXSAmJiBleGl0IDEKCnJlYWQgLWQgLiBoZHIKCmlmIFsgImBqb3NlIGZtdCAtcSAiJGhkciIgLVN5T2cgY2xldmlzIC1nIHBpbiAtdS1gIiAhPSAibnVsbCIgXTsgdGhlbgogICAgZWNobyAiSldFIHBpbiBtaXNtYXRjaCEiID4mMgogICAgZXhpdCAxCmZpCgpqd2s9YGpvc2UgZm10IC1xICIkaGRyIiAtU3lPZyBjbGV2aXMgLWcgbnVsbCAtZyBqd2sgLU9vLWAgfHwgZXhpdCAxCgpqb3NlIGp3ZSBkZWMgLWstIC1pLSA8IDwoZWNobyAtbiAiJGp3ayRoZHIuIjsgY2F0KQo="
+        },
+        "sha256:f128ed8ab1e016e5ecf9b0d0e87697e04667b6553c301fd1cf659266b7eb4324": {
+          "encoding": "base64",
+          "data": "IyEvdXNyL2Jpbi9iYXNoCiMgdmltOiBzZXQgdGFic3RvcD04IHNoaWZ0d2lkdGg9NCBzb2Z0dGFic3RvcD00IGV4cGFuZHRhYiBzbWFydHRhYiBjb2xvcmNvbHVtbj04MDoKIwojIENvcHlyaWdodCAoYykgMjAxNiBSZWQgSGF0LCBJbmMuCiMgQXV0aG9yOiBOYXRoYW5pZWwgTWNDYWxsdW0gPG5wbWNjYWxsdW1AcmVkaGF0LmNvbT4KIwojIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOiB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CiMgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKIyB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBlaXRoZXIgdmVyc2lvbiAzIG9mIHRoZSBMaWNlbnNlLCBvcgojIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCiMKIyBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwKIyBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgojIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKIyBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgojCiMgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKIyBhbG9uZyB3aXRoIHRoaXMgcHJvZ3JhbS4gIElmIG5vdCwgc2VlIDxodHRwOi8vd3d3LmdudS5vcmcvbGljZW5zZXMvPi4KIwoKY2hlY2soKSB7CiAgICByZXF1aXJlX2JpbmFyaWVzIGNsZXZpcy1kZWNyeXB0LW51bGwgY2xldmlzLWRlY3J5cHQtdHBtMiB0cG0yX2NyZWF0ZXByaW1hcnkgdHBtMl91bnNlYWwgdHBtMl9sb2FkIHx8IHJldHVybiAxCiAgICByZXF1aXJlX2FueV9iaW5hcnkgdHBtMl9wY3JyZWFkIHRwbTJfcGNybGlzdCB8fCByZXR1cm4gMQogICAgcmV0dXJuIDAKfQoKZGVwZW5kcygpIHsKICAgIGVjaG8gY2xldmlzCiAgICByZXR1cm4gMAp9CgppbnN0YWxsKCkgewogICAgaW5zdF9tdWx0aXBsZSBjbGV2aXMtZGVjcnlwdC1udWxsIGNsZXZpcy1kZWNyeXB0LXRwbTIgdHBtMl9jcmVhdGVwcmltYXJ5IHRwbTJfdW5zZWFsIHRwbTJfbG9hZAogICAgaW5zdF9tdWx0aXBsZSAtbyB0cG0yX3BjcnJlYWQgdHBtMl9wY3JsaXN0CiAgICBpbnN0X2xpYmRpcl9maWxlICJsaWJ0c3MyLXRjdGktZGV2aWNlLnNvKiIKfQoKaW5zdGFsbGtlcm5lbCgpIHsKICAgIGhvc3Rvbmx5PScnIGluc3Rtb2RzID1kcml2ZXJzL2NoYXIvdHBtCn0K"
+        }
       }
     }
   }

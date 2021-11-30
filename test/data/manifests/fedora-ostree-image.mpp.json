@@ -67,6 +67,10 @@
                   }
                 ],
                 "packages": [
+                  "clevis",
+                  "clevis-luks",
+                  "clevis-dracut",
+                  "clevis-systemd",
                   "fedora-release-iot",
                   "glibc",
                   "glibc-minimal-langpack",
@@ -171,6 +175,56 @@
                 ]
               }
             }
+          }
+        },
+        {
+          "type": "org.osbuild.copy",
+          "inputs": {
+            "buildroot": {
+              "type": "org.osbuild.tree",
+              "origin": "org.osbuild.pipeline",
+              "references": [
+                "name:build"
+              ]
+            }
+          },
+          "options": {
+            "paths": [
+              {
+                "from": "input://buildroot/usr/bin/clevis-decrypt-null",
+                "to": "tree:///usr/bin/clevis-decrypt-null"
+              }
+            ]
+          }
+        },
+        {
+          "type": "org.osbuild.chmod",
+          "options": {
+            "items": {
+              "/usr/bin/clevis-decrypt-null": {
+                "mode": "a+x"
+              }
+            }
+          }
+        },
+        {
+          "type": "org.osbuild.copy",
+          "inputs": {
+            "buildroot": {
+              "type": "org.osbuild.tree",
+              "origin": "org.osbuild.pipeline",
+              "references": [
+                "name:build"
+              ]
+            }
+          },
+          "options": {
+            "paths": [
+              {
+                "from": "input://buildroot/module-setup.sh",
+                "to": "tree:///usr/lib/dracut/modules.d/60clevis-pin-tpm2/module-setup.sh"
+              }
+            ]
           }
         },
         {
@@ -491,47 +545,14 @@
           "options": {
             "passphrase": "osbuild",
             "uuid": "aedd1eef-f24e-425e-a9f3-bb5a1c996a95",
-            "label": "luks"
-          }
-        },
-        {
-          "type": "org.osbuild.lvm2.create",
-          "devices": {
-            "luks": {
-              "type": "org.osbuild.loopback",
-              "options": {
-                "filename": "disk.img",
-                "start": {
-                  "mpp-format-int": "{image.layout['luks'].start}"
-                },
-                "size": {
-                  "mpp-format-int": "{image.layout['luks'].size}"
-                },
-                "lock": true
-              }
-            },
-            "device": {
-              "type": "org.osbuild.luks2",
-              "parent": "luks",
-              "options": {
-                "passphrase": "osbuild",
-                "lock": true
-              }
-            }
-          },
-          "options": {
-            "volumes": [
-              {
-                "name": "root",
-                "extents": "100%FREE"
-              }
-            ]
+            "label": "crypt_root",
+            "cipher": "cipher_null"
           }
         },
         {
           "type": "org.osbuild.mkfs.xfs",
           "devices": {
-            "luks": {
+            "crypt_root": {
               "type": "org.osbuild.loopback",
               "options": {
                 "filename": "disk.img",
@@ -544,25 +565,41 @@
                 "lock": true
               }
             },
-            "lvm": {
+            "device": {
               "type": "org.osbuild.luks2",
-              "parent": "luks",
+              "parent": "crypt_root",
               "options": {
                 "passphrase": "osbuild",
                 "lock": true
-              }
-            },
-            "device": {
-              "type": "org.osbuild.lvm2.lv",
-              "parent": "lvm",
-              "options": {
-                "volume": "root"
               }
             }
           },
           "options": {
             "uuid": "76a22bf4-f153-4541-b6c7-0332c0dfaeac",
             "label": "root"
+          }
+        },
+        {
+          "type": "org.osbuild.clevis.luks-bind",
+          "devices": {
+            "device": {
+              "type": "org.osbuild.loopback",
+              "options": {
+                "filename": "disk.img",
+                "start": {
+                  "mpp-format-int": "{image.layout['luks'].start}"
+                },
+                "size": {
+                  "mpp-format-int": "{image.layout['luks'].size}"
+                },
+                "lock": true
+              }
+            }
+          },
+          "options": {
+            "passphrase": "osbuild",
+            "pin": "null",
+            "policy": "{}"
           }
         },
         {
@@ -609,7 +646,7 @@
                 }
               }
             },
-            "luks": {
+            "crypt_root": {
               "type": "org.osbuild.loopback",
               "options": {
                 "filename": "disk.img",
@@ -622,19 +659,12 @@
                 "lock": true
               }
             },
-            "lvm": {
+            "root": {
               "type": "org.osbuild.luks2",
-              "parent": "luks",
+              "parent": "crypt_root",
               "options": {
                 "passphrase": "osbuild",
                 "lock": true
-              }
-            },
-            "root": {
-              "type": "org.osbuild.lvm2.lv",
-              "parent": "lvm",
-              "options": {
-                "volume": "root"
               }
             }
           },
@@ -685,9 +715,9 @@
           }
         },
         {
-          "type": "org.osbuild.lvm2.metadata",
+          "type": "org.osbuild.luks2.remove-key",
           "devices": {
-            "luks": {
+            "device": {
               "type": "org.osbuild.loopback",
               "options": {
                 "filename": "disk.img",
@@ -699,20 +729,10 @@
                 },
                 "lock": true
               }
-            },
-            "device": {
-              "type": "org.osbuild.luks2",
-              "parent": "luks",
-              "options": {
-                "passphrase": "osbuild",
-                "lock": true
-              }
             }
           },
           "options": {
-            "vg_name": "osbuild",
-            "creation_host": "osbuild",
-            "description": "Built with osbuild"
+            "passphrase": "osbuild"
           }
         }
       ]

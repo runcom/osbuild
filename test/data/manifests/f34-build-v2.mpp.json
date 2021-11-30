@@ -54,7 +54,9 @@
                   "grub2-efi-x64",
                   "grub2-efi-x64-cdboot",
                   "shim-ia32",
-                  "grub2-efi-ia32-cdboot"
+                  "grub2-efi-ia32-cdboot",
+                  "clevis",
+                  "clevis-luks"
                 ]
               }
             }
@@ -65,6 +67,85 @@
             ],
             "exclude": {
               "docs": true
+            }
+          }
+        },
+        {
+          "type": "org.osbuild.copy",
+          "inputs": {
+            "inlinefile": {
+              "type": "org.osbuild.files",
+              "origin": "org.osbuild.source",
+              "mpp-embed": {
+                "id": "clevis-encrypt-null",
+                "path": "/usr/bin/clevis-encrypt-null"
+              }
+            }
+          },
+          "options": {
+            "paths": [
+              {
+                "from": {
+                  "mpp-format-string": "input://inlinefile/{embedded['clevis-encrypt-null']}"
+                },
+                "to": "tree:///usr/bin/clevis-encrypt-null"
+              }
+            ]
+          }
+        },
+        {
+          "type": "org.osbuild.copy",
+          "inputs": {
+            "inlinefile": {
+              "type": "org.osbuild.files",
+              "origin": "org.osbuild.source",
+              "mpp-embed": {
+                "id": "clevis-decrypt-null",
+                "path": "/usr/bin/clevis-decrypt-null"
+              }
+            }
+          },
+          "options": {
+            "paths": [
+              {
+                "from": {
+                  "mpp-format-string": "input://inlinefile/{embedded['clevis-decrypt-null']}"
+                },
+                "to": "tree:///usr/bin/clevis-decrypt-null"
+              }
+            ]
+          }
+        },
+        {
+          "type": "org.osbuild.copy",
+          "inputs": {
+            "inlinefile": {
+              "type": "org.osbuild.files",
+              "origin": "org.osbuild.source",
+              "mpp-embed": {
+                "id": "clevis-decrypt-null-dracut",
+                "path": "/home/amurdaca/module-setup.sh"
+              }
+            }
+          },
+          "options": {
+            "paths": [
+              {
+                "from": {
+                  "mpp-format-string": "input://inlinefile/{embedded['clevis-decrypt-null-dracut']}"
+                },
+                "to": "tree:///module-setup.sh"
+              }
+            ]
+          }
+        },
+        {
+          "type": "org.osbuild.chmod",
+          "options": {
+            "items": {
+              "/usr/bin/clevis-encrypt-null": {
+                "mode": "a+x"
+              }
             }
           }
         },
